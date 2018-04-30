@@ -9,3 +9,4 @@ FULLSTACK_MONGODB_URL=mongodb://localhost:27017/fullstack
 # other
 FULLSTACK_API_SHARED_SECRET=fullstackSharedSecret
 FULLSTACK_PRODUCTION_HOST=slots
+FULLSTACK_NODE_ENV=production

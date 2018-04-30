@@ -1,5 +1,5 @@
 const Koa = require('koa');
-const DB = require('./db');
+const DB = require('./db.mongo');
 const bodyParser = require('koa-bodyparser');
 const routes = require('./routes');
 // const router = require('koa-router');
