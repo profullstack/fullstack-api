@@ -5,16 +5,17 @@ const conf = require('./conf');
 class RethinkDB {
   constructor(opts) {
     this.opts = opts;
+    this.r = r;
     this.connect = this.connect.bind(this);
     this.close = this.close.bind(this);
   }
 
   async connect(ctx, next) {
-		this.conn = await this.r.connect({
-			host: conf.rethinkdb.host,
-			port: conf.rethinkdb.port,
-			db: conf.rethinkdb.db
-		});
+    this.conn = await this.r.connect({
+      host: conf.rethinkdb.host,
+      port: conf.rethinkdb.port,
+      db: conf.rethinkdb.db
+    });
 
     try {
       ctx.db = await this.connect(this.dbUrl);
@@ -33,5 +34,4 @@ class RethinkDB {
   }
 }
 
-exports default RethinkDB;
-
+module.exports = RethinkDB;

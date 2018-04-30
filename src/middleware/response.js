@@ -1,5 +1,5 @@
 /* eslint arrow-body-style: 'off' */
-exports default = app => {
+module.exports = app => {
   return app.use(async (ctx, next) => {
     const start = new Date();
     await next();

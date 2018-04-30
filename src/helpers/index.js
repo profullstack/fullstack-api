@@ -1,6 +1,6 @@
 const account = require('./account');
 
-exports default = {
+module.exports = {
   account
 };
 

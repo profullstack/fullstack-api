@@ -24,4 +24,4 @@ class Authenticate {
   }
 }
 
-exports default Authenticate;
+module.exports = Authenticate;

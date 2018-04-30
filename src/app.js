@@ -38,6 +38,6 @@ routes(app);
 
 app.listen(3000, () => console.warn(`server started http://localhost:3000 ${process.pid} pid`));
 
-exports default app;
+module.exports = app;
 
 

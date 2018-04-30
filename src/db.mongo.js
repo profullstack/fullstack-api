@@ -29,5 +29,5 @@ class Mongo {
   }
 }
 
-exports default Mongo;
+module.exports = Mongo;
 

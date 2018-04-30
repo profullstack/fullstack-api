@@ -1,6 +1,6 @@
 const response = require('./response');
 
-exports default = app => {
+module.exports = app => {
   response(app);
 
   return app;

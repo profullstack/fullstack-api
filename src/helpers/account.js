@@ -25,7 +25,7 @@ function validate(data) {
   return messages;
 }
 
-exports default {
+module.exports = {
   validate
 };
 
