@@ -9,6 +9,9 @@ module.exports = {
       host: process.env.FULLSTACK_RETHINKDB_HOST,
       port: process.env.FULLSTACK_RETHINKDB_PORT,
       url: process.env.FULLSTACK_RETHINKDB_DB
+    },
+    redis: {
+      url: process.env.FULLSTACK_REDIS_URL
     }
   },
 
