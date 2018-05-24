@@ -43,6 +43,14 @@ class Accounts extends Controller {
     const auth = new Auth();
     const data = ctx.request.body;
 
+    if (ctx.request.body.password !== ctx.request.body.passwordRepeat) {
+      ctx.status = 401;
+      ctx.body = {
+        message: 'Passwords do not match!'
+      };
+      return ctx;
+    }
+
     // auth failed, password required
     if (!ctx.request.body.password) {
       ctx.status = 401;
@@ -66,7 +74,9 @@ class Accounts extends Controller {
     data.hashedPassword = await auth.hashPassword(ctx.request.body.password);
     data.updatedAt = new Date().toISOString();
 
+    const password = data.password;
     delete data.password;
+    delete data.passwordRepeat;
 
     const newUser = await ctx.db.collection(this.col).findOneAndUpdate({
       username: data.username
@@ -81,9 +91,25 @@ class Accounts extends Controller {
       returnNewDocument: true
     });
 
+    const isOk = await auth.compare(password, newUser.value.hashedPassword);
     delete newUser.value.hashedPassword;
 
-    ctx.body = newUser.value;
+    if (isOk) {
+      ctx.status = 201;
+      ctx.body = {
+        token: jwt.sign({
+          role: 'user',
+          _id: newUser.value._id
+        }, process.env.FULLSTACK_API_SHARED_SECRET),
+        message: 'Successfully registered!',
+        user: newUser.value
+      };
+    } else {
+      ctx.status = 401;
+      ctx.body = {
+        message: 'Registration failed'
+      };
+    }
   }
 
   async delete(ctx) {

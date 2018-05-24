@@ -16,7 +16,7 @@
     "koa-router": "^7.4.0",
     "koa-websocket": "^4.1.0",
     "minimist": "^1.2.0",
-    "mongodb": "^3.0.7",
+    "mongodb": "^2.x",
     "pm2": "^2.10.3",
     "redis": "^2.8.0",
     "rethinkdb": "^2.3.3"
@@ -30,7 +30,7 @@
   },
   "scripts": {
     "test": "mocha './test/**/*-spec.js'",
-    "start": "nodemon index.js",
+    "start": ". .env.sh && nodemon index.js",
     "start:cluster": "nodemon cluster.js",
     "start:production": "pm2 start index.js -i max --watch --name='fullstack-api'",
     "restart:production": "pm2 restart fullstack-api --update-env",

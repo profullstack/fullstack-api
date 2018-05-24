@@ -13,6 +13,7 @@ class Mongo {
 
   async connect(ctx, next) {
     try {
+      console.log('Connecting to database: ', this.dbUrl);
       ctx.db = await MongoClient.connect(this.dbUrl);
     } catch (err) {
       console.warn('unable to connect: ', this.dbUrl);
