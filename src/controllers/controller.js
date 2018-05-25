@@ -3,20 +3,36 @@ const ObjectId = require('mongodb').ObjectId;
 class Controller {
   // constructor() {}
 
+  async getAll(ctx) {
+    ctx.body = await ctx.db.collection(this.col)
+      .find({})
+      .toArray();
+  }
+
+  async getAllByUser(ctx) {
+    ctx.body = await ctx.db.collection(this.col)
+      .find({
+        createdBy: ObjectId(ctx.state.user._id)
+      })
+      .toArray();
+  }
+
   async get(ctx) {
-    ctx.body = await ctx.db.collection(this.col).findOne({
-      _id: ObjectId(ctx.params.id),
-      createdBy: ObjectId(ctx.state.user._id)
-    });
+    ctx.body = await ctx.db.collection(this.col)
+      .findOne({
+        _id: ObjectId(ctx.params.id),
+        createdBy: ObjectId(ctx.state.user._id)
+      });
   }
 
   async delete(ctx) {
     // only delete objects user has created
     try {
-      const res = await ctx.db.collection(this.col).removeOne({
-        _id: ObjectId(ctx.params.id),
-        createdBy: ObjectId(ctx.state.user._id)
-      });
+      const res = await ctx.db.collection(this.col)
+        .removeOne({
+          _id: ObjectId(ctx.params.id),
+          createdBy: ObjectId(ctx.state.user._id)
+        });
       ctx.status = 204;
       ctx.body = res;
     } catch (err) {
@@ -45,18 +61,20 @@ class Controller {
     }
 
     if (match.id) {
-      const updatedDoc = await ctx.db.collection(this.col).findOneAndUpdate(match, {
-        $set: data,
-        $setOnInsert
-      }, {
-        upsert: true,
-        returnOriginal: false,
-        returnNewDocument: true
-      });
+      const updatedDoc = await ctx.db.collection(this.col)
+        .findOneAndUpdate(match, {
+          $set: data,
+          $setOnInsert
+        }, {
+          upsert: true,
+          returnOriginal: false,
+          returnNewDocument: true
+        });
 
       ctx.body = updatedDoc.value;
     } else {
-      const newDoc = await ctx.db.collection(this.col).insertOne(Object.assign(data, $setOnInsert));
+      const newDoc = await ctx.db.collection(this.col)
+        .insertOne(Object.assign(data, $setOnInsert));
       ctx.body = newDoc.ops.shift();
     }
   }
