@@ -30,8 +30,8 @@
   },
   "scripts": {
     "test": "mocha './test/**/*-spec.js'",
-    "start": ". .env.sh && nodemon index.js",
-    "start:cluster": "nodemon cluster.js",
+    "start": ". ./.env.sh && ./node_modules/.bin/nodemon index.js",
+    "start:cluster": "./node_modules/.bin/nodemon cluster.js",
     "start:production": "pm2 start index.js -i max --watch --name='fullstack-api'",
     "restart:production": "pm2 restart fullstack-api --update-env",
     "lint": "./node_modules/.bin/eslint ./src/ ./test/",
