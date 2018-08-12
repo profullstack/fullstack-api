@@ -10,6 +10,7 @@ class Controller {
   }
 
   async getAllByUser(ctx) {
+    debugger;
     ctx.body = await ctx.db.collection(this.col)
       .find({
         createdBy: ObjectId(ctx.state.user._id)
