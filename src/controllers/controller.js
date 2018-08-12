@@ -25,6 +25,16 @@ class Controller {
       });
   }
 
+  async me(ctx) {
+    const data = await ctx.db.collection(this.col)
+      .findOne({
+        _id: ObjectId(ctx.state.user._id)
+      });
+
+    delete data.hashedPassword;
+    ctx.body = data;
+  }
+
   async delete(ctx) {
     // only delete objects user has created
     try {

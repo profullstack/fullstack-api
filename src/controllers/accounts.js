@@ -137,6 +137,16 @@ class Accounts extends Controller {
       };
     }
   }
+
+  async get(ctx) {
+    const data = await ctx.db.collection(this.col)
+      .findOne({
+        _id: ObjectId(ctx.params.id)
+      });
+
+    delete data.hashedPassword;
+    ctx.body = data;
+  }
 }
 
 module.exports = Accounts;
