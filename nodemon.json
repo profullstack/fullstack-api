@@ -1,4 +1,7 @@
 {
-  "ignoreRoot": [".git"]
+  "ignoreRoot": [
+    ".git",
+    "node_modules"
+  ]
 }
 
