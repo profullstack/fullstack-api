@@ -20,5 +20,6 @@ if [[ $host == "$production" ]]; then
   npm i
   #  pm2 restart
   . $HOME/.bashrc
+  . $HOME/www/${name}/${project}/.env.sh
   npm run restart:production
 fi

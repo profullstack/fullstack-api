@@ -32,8 +32,8 @@
     "test": "mocha './test/**/*-spec.js'",
     "start": ". ./.env.sh && ./node_modules/.bin/nodemon index.js",
     "start:cluster": "./node_modules/.bin/nodemon cluster.js",
-    "start:production": "pm2 start index.js -i max --watch --name='fullstack-api'",
-    "restart:production": "pm2 restart fullstack-api --update-env",
+    "start:production": "NODE_ENV=production && . ./.env.sh && ./node_modules/.bin/pm2 start index.js -i max --watch --name='fullstack-api'",
+    "restart:production": "NODE_ENV=production && . ./.env.sh && ./node_modules/.bin/pm2 restart fullstack-api --update-env",
     "lint": "./node_modules/.bin/eslint ./src/ ./test/",
     "preversion": "npm test",
     "postversion": "git push && git push --tags"
