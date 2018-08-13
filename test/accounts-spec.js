@@ -20,7 +20,6 @@ describe('Accounts', () => {
       return req.delete(`/accounts/${user1._id}`)
         .send({ username: user1.username, password: 'password1' })
         .expect(204);
-
     });
 
     it('create new user', async () => {
@@ -63,7 +62,7 @@ describe('Accounts', () => {
       expect(res.body).to.be.empty;
     });
 
-    it('create duplicate user fails', async() => {
+    it('create duplicate user fails', async () => {
       const res = await req.post('/accounts')
         .send({
           username: 'deleteme1',
@@ -74,7 +73,7 @@ describe('Accounts', () => {
       expect(res.body.message).to.equal('User already exists');
     });
 
-    it('delete user without password fails (unauthenticated)', async() => {
+    it('delete user without password fails (unauthenticated)', async () => {
       const res = await req.delete(`/accounts/${user1._id}`)
         .expect(401);
 

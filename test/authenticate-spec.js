@@ -37,7 +37,7 @@ describe('Authentication', () => {
       const hash = await _auth.hashPassword(plaintext);
 
       expect(hash).to.exist;
-      expect(hash).to.be.length(60)
+      expect(hash).to.be.length(60);
     });
 
     it('correct password works with token', async () => {
@@ -62,8 +62,8 @@ describe('Authentication', () => {
 
     context('protected route', () => {
       class Controller {
-        constructor(){}
-        async get(ctx, next){
+        constructor() {}
+        async get(ctx, next) {
           ctx.body = await Promise.resolve('some data');
         }
       }
@@ -71,7 +71,7 @@ describe('Authentication', () => {
       const Koa = require('koa');
       const app = new Koa();
       const Router = require('koa-router');
-      const router = new Router({ prefix: `/protected` });
+      const router = new Router({ prefix: '/protected' });
 
       router.get('/', _auth.jwt(), controller.get.bind(controller));
       app.use(router.routes());
@@ -89,7 +89,7 @@ describe('Authentication', () => {
         const authRes = await auth.login({ username: 'test1', password: 'asdf123' });
         const res = await supertest.agent(app.listen()).get('/protected')
           .set('Accept', 'application/json')
-          .set('Authorization', `bearer ${authRes.body.token+'badtoken'}`)
+          .set('Authorization', `bearer ${`${authRes.body.token}badtoken`}`)
           .expect(401);
 
         expect(res.text).to.equal('Invalid token\n');
