@@ -21,7 +21,6 @@ class Controller {
     ctx.body = await ctx.db.collection(this.col)
       .findOne({
         _id: ObjectId(ctx.params.id),
-        createdBy: ObjectId(ctx.state.user._id)
       });
   }
 
