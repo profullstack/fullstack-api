@@ -70,12 +70,11 @@ class Controller {
     }
 
     if (match.id) {
+      delete data._id;
       const updatedDoc = await ctx.db.collection(this.col)
-        .findOneAndUpdate(match, {
-          $set: data,
-          $setOnInsert
+        .findOneAndUpdate(match.id, {
+          $set: {...data, ...match},
         }, {
-          upsert: true,
           returnOriginal: false,
           returnNewDocument: true
         });
