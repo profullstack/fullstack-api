@@ -2,7 +2,7 @@
   "name": "fullstack-api",
   "version": "1.0.0",
   "author": "",
-  "description": "Fullstack API starter kit with Koa, rethinkdb and websockets.",
+  "description": "Fullstack API starter kit with Koa, mongodb and websockets.",
   "main": "index.js",
   "dependencies": {
     "axios": "^0.18.0",
@@ -22,14 +22,18 @@
     "rethinkdb": "^2.3.3"
   },
   "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-string": "^1.5.0",
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.11.0",
     "mocha": "^5.1.1",
-    "nodemon": "^1.17.3"
+    "nodemon": "^1.17.3",
+    "supertest": "^3.3.0",
+    "supertest-as-promised": "^4.0.2"
   },
   "scripts": {
-    "test": "mocha './test/**/*-spec.js'",
+    "test": "NODE_ENV=test; mocha './test/**/*-spec.js'",
     "start": ". ./.env.sh && ./node_modules/.bin/nodemon index.js",
     "start:cluster": "./node_modules/.bin/nodemon cluster.js",
     "start:production": "NODE_ENV=production && . ./.env.sh && ./node_modules/.bin/pm2 start index.js -i max --watch --name='fullstack-api'",
@@ -38,5 +42,5 @@
     "preversion": "npm test",
     "postversion": "git push && git push --tags"
   },
-  "license": "MIT"
+  "license": "SEE LICENSE IN LICENSE"
 }
