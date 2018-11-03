@@ -4,13 +4,13 @@ class Controller {
   // constructor() {}
 
   async getAll(ctx) {
-    ctx.body = await ctx.db.collection(this.col)
+    ctx.body = await ctx.db.collection(this.collection)
       .find({})
       .toArray();
   }
 
   async getAllByUser(ctx) {
-    ctx.body = await ctx.db.collection(this.col)
+    ctx.body = await ctx.db.collection(this.collection)
       .find({
         createdBy: ObjectId(ctx.state.user._id)
       })
@@ -18,14 +18,14 @@ class Controller {
   }
 
   async get(ctx) {
-    ctx.body = await ctx.db.collection(this.col)
+    ctx.body = await ctx.db.collection(this.collection)
       .findOne({
         _id: ObjectId(ctx.params.id),
       });
   }
 
   async me(ctx) {
-    const data = await ctx.db.collection(this.col)
+    const data = await ctx.db.collection(this.collection)
       .findOne({
         _id: ObjectId(ctx.state.user._id)
       });
@@ -37,7 +37,7 @@ class Controller {
   async delete(ctx) {
     // only delete objects user has created
     try {
-      const res = await ctx.db.collection(this.col)
+      const res = await ctx.db.collection(this.collection)
         .removeOne({
           _id: ObjectId(ctx.params.id),
           createdBy: ObjectId(ctx.state.user._id)
@@ -71,7 +71,7 @@ class Controller {
 
     if (match.id) {
       delete data._id;
-      const updatedDoc = await ctx.db.collection(this.col)
+      const updatedDoc = await ctx.db.collection(this.collection)
         .findOneAndUpdate(match.id, {
           $set: {...data, ...match},
         }, {
@@ -81,7 +81,7 @@ class Controller {
 
       ctx.body = updatedDoc.value;
     } else {
-      const newDoc = await ctx.db.collection(this.col)
+      const newDoc = await ctx.db.collection(this.collection)
         .insertOne(Object.assign(data, $setOnInsert));
       ctx.body = newDoc.ops.shift();
     }

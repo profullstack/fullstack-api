@@ -15,6 +15,10 @@ module.exports = {
     }
   },
 
-  test: {}
+  test: {
+    mongodb: {
+      url: process.env.FULLSTACK_TEST_MONGODB_URL
+    },
+  }
 };
 

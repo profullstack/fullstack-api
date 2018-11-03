@@ -6,7 +6,7 @@ const ObjectId = require('mongodb').ObjectId;
 class Accounts extends Controller {
   constructor() {
     super();
-    this.col = 'accounts';
+    this.collection = 'accounts';
   }
 
   async login(ctx) {
@@ -35,7 +35,7 @@ class Accounts extends Controller {
   }
 
   async getUser(ctx) {
-    return ctx.db.collection(this.col).findOne(({ username: ctx.request.body.username }));
+    return ctx.db.collection(this.collection).findOne(({ username: ctx.request.body.username }));
   }
 
   // new user creation
@@ -78,7 +78,7 @@ class Accounts extends Controller {
     delete data.password;
     delete data.passwordRepeat;
 
-    const newUser = await ctx.db.collection(this.col).findOneAndUpdate({
+    const newUser = await ctx.db.collection(this.collection).findOneAndUpdate({
       username: data.username
     }, {
       $set: data,
@@ -123,7 +123,7 @@ class Accounts extends Controller {
 
     if (isOk) {
       try {
-        const res = await ctx.db.collection(this.col).removeOne({ _id: ObjectId(ctx.params.id) });
+        const res = await ctx.db.collection(this.collection).removeOne({ _id: ObjectId(ctx.params.id) });
         ctx.status = 204;
         ctx.body = res;
       } catch (err) {
@@ -139,7 +139,7 @@ class Accounts extends Controller {
   }
 
   async get(ctx) {
-    const data = await ctx.db.collection(this.col)
+    const data = await ctx.db.collection(this.collection)
       .findOne({
         _id: ObjectId(ctx.params.id)
       });

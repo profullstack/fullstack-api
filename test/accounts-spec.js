@@ -1,17 +1,22 @@
 const req = require('./helpers/req');
 
-describe('Accounts', () => {
+describe.only('Accounts', () => {
   context('/accounts', () => {
     let user1;
     let user2;
 
     before(async () => {
-      const res = await req.post('/accounts')
-        .send({
-          username: 'deleteme1',
-          password: 'password1'
-        })
-        .expect(200);
+      let res;
+      try {
+        res = await req.post('/accounts')
+          .send({
+            username: 'deleteme1',
+            password: 'password1'
+          })
+          .expect(201);
+      } catch (err) {
+        console.error(err);
+      }
 
       user1 = res.body;
     });
@@ -22,7 +27,7 @@ describe('Accounts', () => {
         .expect(204);
     });
 
-    it('create new user', async () => {
+    it.only('create new user', async () => {
       const res = await req.post('/accounts')
         .send({
           username: 'newuser2',

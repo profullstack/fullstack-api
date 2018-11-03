@@ -3,7 +3,7 @@ const Controller = require('./controller');
 class Items extends Controller {
   constructor() {
     super();
-    this.col = 'items';
+    this.collection = 'items';
   }
 }
 

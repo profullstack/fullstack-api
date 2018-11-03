@@ -29,18 +29,25 @@
     "eslint-plugin-import": "^2.11.0",
     "mocha": "^5.1.1",
     "nodemon": "^1.17.3",
+    "pre-commit": "^1.2.2",
     "supertest": "^3.3.0",
     "supertest-as-promised": "^4.0.2"
   },
   "scripts": {
-    "test": "NODE_ENV=test; mocha './test/**/*-spec.js'",
+    "test": "NODE_ENV=test mocha './test/**/*-spec.js'",
     "start": ". ./.env.sh && ./node_modules/.bin/nodemon index.js",
     "start:cluster": "./node_modules/.bin/nodemon cluster.js",
     "start:production": "NODE_ENV=production && . ./.env.sh && ./node_modules/.bin/pm2 start index.js -i max --watch --name='fullstack-api'",
     "restart:production": "NODE_ENV=production && . ./.env.sh && ./node_modules/.bin/pm2 restart fullstack-api --update-env",
     "lint": "./node_modules/.bin/eslint ./src/ ./test/",
     "preversion": "npm test",
-    "postversion": "git push && git push --tags"
+    "postversion": "git push && git push --tags",
+    "precommit-msg": "echo 'Pre-commit checks...' && exit 0"
   },
-  "license": "SEE LICENSE IN LICENSE"
+  "license": "SEE LICENSE IN LICENSE",
+  "pre-commit": [
+    "precommit-msg",
+    "lint",
+    "test"
+  ]
 }
