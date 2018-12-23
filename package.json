@@ -1,0 +1,55 @@
+{
+  "name": "fullstack-api",
+  "version": "1.0.0",
+  "author": "",
+  "description": "Fullstack API starter kit with Koa, mongodb and websockets.",
+  "main": "index.js",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "bcrypt": "^2.0.1",
+    "glob": "^7.1.2",
+    "hoek": "^6.0.0",
+    "jsonwebtoken": "^8.2.1",
+    "kcors": "^2.2.1",
+    "koa": "^2.5.1",
+    "koa-bodyparser": "^4.2.0",
+    "koa-jwt": "^3.3.1",
+    "koa-router": "^7.4.0",
+    "koa-websocket": "^4.1.0",
+    "lodash": "^4.17.11",
+    "minimist": "^1.2.0",
+    "mongodb": "^2.x",
+    "pm2": "^3.x",
+    "redis": "^2.8.0",
+    "rethinkdb": "^2.3.3"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-string": "^1.5.0",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.11.0",
+    "mocha": "^5.1.1",
+    "nodemon": "^1.17.3",
+    "pre-commit": "^1.2.2",
+    "supertest": "^3.3.0",
+    "supertest-as-promised": "^4.0.2"
+  },
+  "scripts": {
+    "test": "NODE_ENV=test mocha './test/**/*-spec.js'",
+    "start": ". ./.env.sh && ./node_modules/.bin/nodemon index.js",
+    "start:cluster": "./node_modules/.bin/nodemon cluster.js",
+    "start:production": ". ./.env.sh && NODE_ENV=production ./node_modules/.bin/pm2 start index.js -i max --watch --name='fullstack-api'",
+    "restart:production": ". ./.env.sh && NODE_ENV=production ./node_modules/.bin/pm2 restart fullstack-api --update-env",
+    "lint": "./node_modules/.bin/eslint ./src/",
+    "preversion": "npm test",
+    "postversion": "git push && git push --tags",
+    "precommit-msg": "echo 'Pre-commit checks...' && exit 0"
+  },
+  "license": "SEE LICENSE IN LICENSE",
+  "pre-commit": [
+    "precommit-msg",
+    "lint",
+    "test"
+  ]
+}

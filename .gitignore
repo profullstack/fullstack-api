@@ -1,0 +1,6 @@
+node_modules/
+*.swp
+.idea/
+dist/
+sslcert/
+.env.sh

@@ -1,0 +1,4 @@
+--require ./test/helpers/setup
+--reporter spec
+--ui bdd
+--timeout 120000
