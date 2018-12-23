@@ -1,4 +1,4 @@
-# fullstack-api
+# torula-backend
 
 Fullstack API starter kit with Koa, rethinkdb and websockets.
 
