@@ -3,4 +3,5 @@ node_modules/
 .idea/
 dist/
 sslcert/
-.env.sh
+.env
+.env.*
