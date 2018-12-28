@@ -10,10 +10,10 @@ class Home extends Controller {
   }
 
   async home(ctx) {
-    const env = process.env.FULLSTACK_NODE_ENV || 'development';
+    const env = process.env.NODE_ENV || 'development';
 
     ctx.body = {
-      'fullstack-api': this.version.api,
+      'torula-api': this.version.api,
       env
     };
   }

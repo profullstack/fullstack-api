@@ -1,8 +1,8 @@
 {
-  "name": "fullstack-api",
+  "name": "torula-backend",
   "version": "1.0.0",
   "author": "",
-  "description": "Fullstack API starter kit with Koa, mongodb and websockets.",
+  "description": "Torula API starter kit with Koa, mongodb and websockets.",
   "main": "index.js",
   "dependencies": {
     "axios": "^0.18.0",
@@ -37,12 +37,13 @@
     "supertest-as-promised": "^4.0.2"
   },
   "scripts": {
+    "deploy": "./bin/deploy.sh",
     "test": "NODE_ENV=test mocha './test/**/*-spec.js'",
-    "start": ". ./.env.sh && ./node_modules/.bin/nodemon index.js",
-    "start:cluster": "./node_modules/.bin/nodemon cluster.js",
-    "start:production": ". ./.env.sh && NODE_ENV=production ./node_modules/.bin/pm2 start index.js -i max --watch --name='fullstack-api'",
-    "restart:production": ". ./.env.sh && NODE_ENV=production ./node_modules/.bin/pm2 restart fullstack-api --update-env",
-    "lint": "./node_modules/.bin/eslint ./src/",
+    "start": "NODE_ENV=development npx nodemon index.js",
+    "start:cluster": "NODE_ENV=development npx nodemon cluster.js",
+    "start:production": "NODE_ENV=production npx pm2 start index.js --name='torula-backend'",
+    "restart:production": "NODE_ENV=production npx pm2 restart torula-backend --update-env",
+    "lint": "npx eslint ./src/",
     "preversion": "npm test",
     "postversion": "git push && git push --tags",
     "precommit-msg": "echo 'Pre-commit checks...' && exit 0"

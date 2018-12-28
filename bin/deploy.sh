@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 
+. .env
+
 args=(-azvP --delete --exclude=node_modules --exclude=.idea --exclude=.git)
-hosts=(geese) # tornado lightning thunder tundra jefferson
+hosts=(toruladev) # tornado lightning thunder tundra jefferson
 dry=() #add --dry-run to enable testing
-user=ettinger
-name=fullstack
-project=fullstack-api
+user=$TORULA_USER
+name=$TORULA_PATH
+project=torula-backend
 
 for host in "${hosts[@]}"
 do
@@ -19,5 +21,5 @@ do
 done
 
 version=$(jq -r .version package.json)
-say "fullstack API is live!"
+#say "torula API is live!"
 exit

@@ -1,6 +1,6 @@
 # torula-backend
 
-Fullstack API starter kit with Koa, rethinkdb and websockets.
+Torula API starter kit with Koa, rethinkdb and websockets.
 
 ## install
 	

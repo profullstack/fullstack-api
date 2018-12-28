@@ -22,7 +22,7 @@ class Accounts extends Controller {
         token: jwt.sign({
           role: 'user',
           _id: user._id
-        }, process.env.FULLSTACK_API_SHARED_SECRET),
+        }, process.env.TORULA_API_SHARED_SECRET),
         message: 'Successfully logged in!',
         user
       };
@@ -100,7 +100,7 @@ class Accounts extends Controller {
         token: jwt.sign({
           role: 'user',
           _id: newUser.value._id
-        }, process.env.FULLSTACK_API_SHARED_SECRET),
+        }, process.env.TORULA_API_SHARED_SECRET),
         message: 'Successfully registered!',
         user: newUser.value
       };
