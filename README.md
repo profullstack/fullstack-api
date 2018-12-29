@@ -20,7 +20,8 @@ Torula API starter kit with Koa, rethinkdb and websockets.
 
 Self-signed certs:
 
-    ./bin/certs
+    mkdir ./sslcerts
+    ./bin/certs.sh
 
 ## requirements
 
