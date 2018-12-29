@@ -41,5 +41,15 @@ routes(app);
 
 app.listen(3000, () => console.warn(`server started http://localhost:3000 ${process.pid} pid`));
 
+if (process.env.TORULA_USE_SSL) {
+  const https = require('https');
+  const fs = require('fs');
+  const options = {
+    key: fs.readFileSync('./sslcert/key.pem', 'utf8'),
+    cert: fs.readFileSync('./sslcert/cert.pem', 'utf8')
+  };
+  https.createServer(options, app.callback()).listen(443);
+}
+
 module.exports = app;
 
