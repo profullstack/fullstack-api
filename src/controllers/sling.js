@@ -83,7 +83,7 @@ class Sling extends Controller {
 
   async processFairplayCert(ctx) {
     const reqUrl = fairplayCkc + ctx.params.channelId;
-    const options = { url: reqUrl, body: Buffer.from(ctx.request.rawBody), encoding: null };
+    const options = { url: reqUrl, body: ctx.text, encoding: null };
     try {
       ctx.body = await rp.post(options);
       ctx.type = 'application/octet-stream';
@@ -94,7 +94,7 @@ class Sling extends Controller {
   }
 
   async processPlayready(ctx) {
-    const options = { url: playreadyUrl, body: Buffer.from(ctx.request.rawBody), encoding: null };
+    const options = { url: playreadyUrl, body: ctx.text, encoding: null };
     try {
       ctx.body = await rp.post(options);
       ctx.type = 'application/octet-stream';
@@ -105,12 +105,11 @@ class Sling extends Controller {
   }
 
   async processWidevine(ctx) {
-    const buf = Buffer.from(ctx.request.rawBody);
     const drmBody = {
       env: 'production',
       user_id: uuidv4(),
       channel_id: '175ca5261a83db31c5df434a9f7218b1',
-      message: [...buf]
+      message: [...ctx.text]
     };
     const options = {
       url: widevineUrl,
