@@ -18,6 +18,7 @@ router.get('/:channelId.mpd', controller.getStream.bind(controller));
 router.get('/:channelId.m3u8', controller.getFairplayStream.bind(controller));
 router.get('/:channelId/:quality.m3u8', controller.getFairplayVariant.bind(controller));
 router.get('/disney/:brand', controller.getDisneyStream.bind(controller));
+router.get('/:title/logo.png', controller.getLogo.bind(controller));
 router.get('/schedule.json', controller.getScheduleJson.bind(controller));
 
 module.exports = router;

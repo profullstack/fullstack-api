@@ -41,6 +41,22 @@ class Sling extends Controller {
     }
   }
 
+  async getLogo(ctx) {
+    try {
+      ctx.body = await this.getLogoHelper(ctx, ctx.params.title);
+      if (!ctx.body) {
+        ctx.status = 404;
+      } else {
+        ctx.type = 'image/png';
+        const age = 86400;
+        ctx.set('Cache-Control', `max-age=${age}`);
+      }
+    } catch (err) {
+      ctx.status = 500;
+      ctx.body = err.message;
+    }
+  }
+
   async getFairplayStream(ctx) {
     try {
       ctx.body = await this.getFairplayStreamHelper(ctx, ctx.params.channelId);
@@ -228,6 +244,25 @@ class Sling extends Controller {
           ctx.cache.setex(cacheId, 10, JSON.stringify(items));
           return items;
         });
+      });
+    });
+  }
+
+
+  getLogoHelper(ctx, channelName) {
+    const cacheId = `sling-image-${channelName}`;
+    return ctx.cachePromise(cacheId).then(reply => {
+      if (reply) {
+        return Buffer.from(reply, 'base64');
+      }
+      return this.getRawSchedule(ctx).then(res => {
+        const channel = res.channels.find(x => x.channel_name === channelName);
+        if (channel && channel.image && channel.image.url) {
+          return rp.get({ url: channel.image.url, encoding: null }).then(img => {
+            ctx.cache.setex(cacheId, 86400, img.toString('base64'));
+            return img;
+          });
+        }
       });
     });
   }
