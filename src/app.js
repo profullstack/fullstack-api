@@ -1,5 +1,6 @@
 const Koa = require('koa');
 const DB = require('./db.mongo');
+const Cache = require('./db.redis');
 const bodyParser = require('koa-bodyparser');
 const routes = require('./routes');
 // const router = require('koa-router');
@@ -7,6 +8,7 @@ const routes = require('./routes');
 const middleware = require('./middleware');
 
 const db = new DB();
+const cache = new Cache();
 // const api = router();
 const app = new Koa();
 const cors = require('kcors');
@@ -17,7 +19,8 @@ app
   .use(cors({
     methods: ['GET', 'PUT', 'POST', 'PATCH', 'DELETE']
   }))
-  .use(db.connect);
+  .use(db.connect)
+  .use(cache.connect);
 
 middleware(app);
 routes(app);

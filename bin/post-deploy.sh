@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-# load node v6
 cd "$(dirname "$0")/.."
 . .env
 . $HOME/.bashrc
@@ -8,7 +7,7 @@ cd "$(dirname "$0")/.."
 
 host=$TORULA_HOST
 name=$TORULA_PATH
-project=torula-backend
+project=$TORULA_PROJECT
 
 node -v
 npm -v
