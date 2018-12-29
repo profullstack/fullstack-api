@@ -5,3 +5,4 @@ dist/
 sslcert/
 .env
 .env.*
+.vscode
