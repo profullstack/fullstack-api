@@ -48,7 +48,7 @@ if (process.env.TORULA_USE_SSL) {
     key: fs.readFileSync('./sslcert/key.pem', 'utf8'),
     cert: fs.readFileSync('./sslcert/cert.pem', 'utf8')
   };
-  https.createServer(options, app.callback()).listen(443);
+  https.createServer(options, app.callback()).listen(process.env.SSL_PORT);
 }
 
 module.exports = app;
