@@ -2,6 +2,7 @@ const Koa = require('koa');
 const DB = require('./db.mongo');
 const Cache = require('./db.redis');
 const bodyParser = require('koa-bodyparser');
+const getRawBody = require('raw-body');
 const routes = require('./routes');
 // const router = require('koa-router');
 // const websockify = require('koa-websocket');
@@ -14,13 +15,13 @@ const app = new Koa();
 const cors = require('kcors');
 // const socket = websockify(app);
 
+app.use(function * (next) {
+  this.text = yield getRawBody(this.req);
+  yield next;
+});
+
 app
-  .use(bodyParser({
-    extendTypes: {
-      text: ['text/plain']
-    },
-    enableTypes: ['text']
-  }))
+  .use(bodyParser())
   .use(cors({
     methods: ['GET', 'PUT', 'POST', 'PATCH', 'DELETE']
   }))

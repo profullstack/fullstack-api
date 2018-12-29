@@ -24,6 +24,7 @@
     "minimist": "^1.2.0",
     "mongodb": "^2.x",
     "pm2": "^3.x",
+    "raw-body": "^2.3.3",
     "redis": "^2.8.0",
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
