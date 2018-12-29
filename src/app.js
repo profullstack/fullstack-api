@@ -15,7 +15,12 @@ const cors = require('kcors');
 // const socket = websockify(app);
 
 app
-  .use(bodyParser())
+  .use(bodyParser({
+    extendTypes: {
+      text: ['text/plain']
+    },
+    enableTypes: ['text']
+  }))
   .use(cors({
     methods: ['GET', 'PUT', 'POST', 'PATCH', 'DELETE']
   }))
