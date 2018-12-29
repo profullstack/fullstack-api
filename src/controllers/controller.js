@@ -20,7 +20,7 @@ class Controller {
   async get(ctx) {
     ctx.body = await ctx.db.collection(this.collection)
       .findOne({
-        _id: ObjectId(ctx.params.id),
+        _id: ObjectId(ctx.params.id)
       });
   }
 
@@ -73,7 +73,7 @@ class Controller {
       delete data._id;
       const updatedDoc = await ctx.db.collection(this.collection)
         .findOneAndUpdate(match.id, {
-          $set: {...data, ...match},
+          $set: { ...data, ...match }
         }, {
           returnOriginal: false,
           returnNewDocument: true

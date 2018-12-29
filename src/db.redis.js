@@ -17,7 +17,7 @@ class Redis {
 
   async connect(ctx, next) {
     try {
-      ctx.db = await redis.createClient({
+      ctx.cache = await redis.createClient({
         url: this.dbUrl
       });
     } catch (err) {
@@ -30,7 +30,7 @@ class Redis {
   }
 
   async close(ctx, next) {
-    await this.client.quit();
+    await ctx.cache.quit();
     await next();
   }
 }
