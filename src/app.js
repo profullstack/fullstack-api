@@ -39,7 +39,7 @@ routes(app);
 //   ctx.body = 'Hello World'
 // });
 
-app.listen(3000, () => console.warn(`server started http://localhost:3000 ${process.pid} pid`));
+app.listen(process.env.PORT, () => console.warn(`server started http://localhost:${process.env.PORT} ${process.pid} pid`));
 
 if (process.env.TORULA_USE_SSL) {
   const https = require('https');
