@@ -2,6 +2,7 @@ const http = require('http');
 const redis = require('redis');
 const conf = require('./conf');
 const bluebird = require('bluebird');
+const { promisify } = require('util');
 
 class Redis {
   constructor(opts) {
@@ -20,6 +21,7 @@ class Redis {
       ctx.cache = await redis.createClient({
         url: this.dbUrl
       });
+      ctx.cachePromise = promisify(ctx.cache.get).bind(ctx.cache);
     } catch (err) {
       console.warn('unable to connect: ', this.dbUrl);
       ctx.status = 500;
