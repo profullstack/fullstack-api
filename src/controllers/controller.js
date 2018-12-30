@@ -9,6 +9,10 @@ class Controller {
       .toArray();
   }
 
+  async noop(ctx) {
+    ctx.status = 200;
+  }
+
   async getAllByUser(ctx) {
     ctx.body = await ctx.db.collection(this.collection)
       .find({
