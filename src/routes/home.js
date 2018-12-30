@@ -10,5 +10,7 @@ const controller = new Controller();
 const router = new Router({ prefix: '/api/1' });
 
 router.get('/', controller.home.bind(controller));
+router.get('/noop', controller.noop.bind(controller));
+router.post('/noop', controller.noop.bind(controller));
 
 module.exports = router;
