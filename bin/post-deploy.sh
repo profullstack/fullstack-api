@@ -16,8 +16,6 @@ echo "current name: $name"
 
 cd $HOME/www/${name}/${project}
 npm i
-if [[ $name == 'torula-dev' ]]; then
-  npm run restart &
-else
+if [[ $name == 'torula' ]]; then
   npm run restart:production
 fi
