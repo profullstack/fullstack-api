@@ -184,7 +184,7 @@ class Sling extends Controller {
         const promises = [];
         res.channels.forEach(channel => {
           // let thumbnail = channel.image && channel.image.url ? channel.image.url : null
-          const thumbnail = `/api/1/channels/${encodeURIComponent(channel.channel_name)}/logo.png`;
+          const thumbnail = `/api/1/sling/${encodeURIComponent(channel.channel_name)}/logo.png`;
           const item = {
             channel: {
               // title: Buffer.from(channel.channel_name).toString('base64'),
