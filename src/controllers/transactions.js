@@ -23,7 +23,7 @@ class Transactions extends Controller {
     const tOptions = {
       currency1: 'usd',
       currency2: 'btc',
-      amount: 200,
+      amount: 0.01,
       buyer_email: user.email,
       ipn_url: 'https://dev.toru.la/api/1/transactions/AYIuLzM8wp/check'
     };
