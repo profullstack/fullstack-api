@@ -15,8 +15,8 @@ router.use(auth.jwt());
 router.use(async (ctx, next) => {
   if (ctx.request.method === 'POST') {
     ctx.text = await getRawBody(ctx.req);
-    await next();
   }
+  await next();
 });
 
 router.get('/bKIvEvxhlH', controller.getFairplayCert.bind(controller));
