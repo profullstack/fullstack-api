@@ -16,17 +16,21 @@ class Transactions extends Controller {
   }
 
   async createTransaction(ctx) {
+    const currency1 = 'usd';
+    const currency2 = 'btc';
     const user = await ctx.db.collection('accounts')
       .findOne({
         _id: ObjectId(ctx.state.user._id)
       });
     const tOptions = {
-      currency1: 'usd',
-      currency2: 'btc',
+      currency1,
+      currency2,
       amount: 4,
       buyer_email: user.email
     };
     ctx.request.body = await client.createTransaction(tOptions);
+    ctx.request.body.currency1 = currency1;
+    ctx.request.body.currency2 = currency2;
     ctx.request.body.status = '0';
     await this.post(ctx);
   }
