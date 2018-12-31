@@ -10,6 +10,7 @@ class Accounts extends Controller {
   }
 
   async login(ctx) {
+    console.log(ctx.request.headers['X-Real-IP']);
     const auth = new Auth();
     const user = await this.getUser(ctx);
     const isOk = await auth.compare(ctx.request.body.password, user.hashedPassword);
