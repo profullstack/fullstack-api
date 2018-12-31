@@ -1,7 +1,10 @@
 const Koa = require('koa');
+const https = require('https');
+const fs = require('fs');
+const bodyParser = require('koa-bodyparser');
+const cors = require('kcors');
 const DB = require('./db.mongo');
 const Cache = require('./db.redis');
-const bodyParser = require('koa-bodyparser');
 const routes = require('./routes');
 // const router = require('koa-router');
 // const websockify = require('koa-websocket');
@@ -11,7 +14,6 @@ const db = new DB();
 const cache = new Cache();
 // const api = router();
 const app = new Koa();
-const cors = require('kcors');
 // const socket = websockify(app);
 
 app
@@ -44,8 +46,6 @@ routes(app);
 app.listen(process.env.PORT, () => console.warn(`server started http://localhost:${process.env.PORT} ${process.pid} pid`));
 
 if (process.env.TORULA_USE_SSL) {
-  const https = require('https');
-  const fs = require('fs');
   const options = {
     key: fs.readFileSync('./sslcert/key.pem', 'utf8'),
     cert: fs.readFileSync('./sslcert/cert.pem', 'utf8')

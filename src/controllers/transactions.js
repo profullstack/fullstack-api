@@ -44,13 +44,13 @@ class Transactions extends Controller {
           _id: transaction.createdBy
         });
         // top up expiration date
-        let expDate = user.subscription_expires ? new Date(user.subscription_expires) : new Date();
+        let expDate = user.expiresAt ? new Date(user.expiresAt) : new Date();
         expDate = new Date(expDate.setFullYear(expDate.getFullYear() + 1));
         await ctx.db.collection('accounts').updateOne({
           _id: transaction.createdBy
         }, {
           $set: {
-            subscription_expires: expDate.toISOString(),
+            expiresAt: expDate.toISOString(),
             updatedAt: new Date().toISOString()
           }
         });
