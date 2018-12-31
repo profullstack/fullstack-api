@@ -398,7 +398,7 @@ class Sling extends Controller {
       const hex = this.pad(i.toString(16), 4);
       let segment = anchor.segmentTemplate.replace('{{HEX}}', hex.toUpperCase());
       segment = segment.replace('http://', 'https://');
-      variantArr.push(`#EXT-X-KEY:METHOD=SAMPLE-AES,KEYFORMAT="com.apple.streamingkeydelivery",KEYFORMATVERSIONS="1",URI="skd://watch.torula.com/api/1/sling/g1Ilryrq0i/${anchor.currKey}"
+      variantArr.push(`#EXT-X-KEY:METHOD=SAMPLE-AES,KEYFORMAT="com.apple.streamingkeydelivery",KEYFORMATVERSIONS="1",URI="skd://${process.env.TORULA_HOST}/api/1/sling/g1Ilryrq0i/${anchor.currKey}"
 #EXTINF:2.048,
 ${segment}`);
     }
