@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 . .env
+. $HOME/.bashrc
 
 args=(-azvP --delete --exclude=node_modules --exclude=.idea --exclude=.git)
 hosts=(toruladev) # tornado lightning thunder tundra jefferson
@@ -21,5 +22,5 @@ do
 done
 
 version=$(jq -r .version package.json)
-#say "torula API is live!"
+say "torula API is live!"
 exit
