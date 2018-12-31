@@ -62,7 +62,6 @@
   "license": "SEE LICENSE IN LICENSE",
   "pre-commit": [
     "precommit-msg",
-    "lint",
-    "test"
+    "lint"
   ]
 }

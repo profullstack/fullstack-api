@@ -15,5 +15,6 @@ router.get('/me', auth.jwt(), controller.me.bind(controller));
 router.get('/:id', auth.jwt(), controller.get.bind(controller));
 router.delete('/:id', controller.delete.bind(controller));
 router.post('/login', controller.login.bind(controller));
+router.post('/whitelist', auth.jwt(), controller.updateWhitelist.bind(controller));
 
 module.exports = router;

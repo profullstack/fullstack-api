@@ -9,8 +9,26 @@ class Accounts extends Controller {
     this.collection = 'accounts';
   }
 
+  async updateWhitelist(ctx) {
+    if (Array.isArray(ctx.request.body.whitelist) && ctx.request.body.whitelist.length <= 3) {
+      // eslint-disable-next-line no-underscore-dangle
+      ctx.body = await ctx.db.collection(this.collection)
+        .updateOne({
+          _id: ObjectId(ctx.state.user._id)
+        }, {
+          $set: {
+            whitelist: ctx.request.body.whitelist,
+            updatedAt: new Date().toISOString()
+          }
+        });
+    } else {
+      ctx.status = 400;
+      ctx.body = 'whitelist needs to be an array of 3 or less IP addresses';
+    }
+    return ctx;
+  }
+
   async login(ctx) {
-    console.log(ctx.request.headers['X-Real-IP']);
     const auth = new Auth();
     const user = await this.getUser(ctx);
     const isOk = await auth.compare(ctx.request.body.password, user.hashedPassword);
@@ -124,7 +142,9 @@ class Accounts extends Controller {
 
     if (isOk) {
       try {
-        const res = await ctx.db.collection(this.collection).removeOne({ _id: ObjectId(ctx.params.id) });
+        const res = await ctx.db.collection(this.collection).removeOne({
+          _id: ObjectId(ctx.params.id)
+        });
         ctx.status = 204;
         ctx.body = res;
       } catch (err) {

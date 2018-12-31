@@ -17,7 +17,10 @@ module.exports = {
 
   test: {
     mongodb: {
-      url: process.env.TORULA_TEST_MONGODB_URL
+      url: process.env.TORULA_MONGODB_URL
+    },
+    redis: {
+      url: process.env.TORULA_REDIS_URL
     }
   }
 };

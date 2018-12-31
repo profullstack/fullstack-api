@@ -1,6 +1,7 @@
 const path = require('path');
 const Router = require('koa-router');
 const Auth = require('../middleware/authenticate');
+const Filter = require('../middleware/filter');
 const getRawBody = require('raw-body');
 
 const name = path.basename(__filename, '.js');
@@ -10,6 +11,7 @@ const Controller = require(`../controllers/${name}`);
 const controller = new Controller();
 const router = new Router({ prefix: `/api/1/${name}` });
 const auth = new Auth();
+const filter = new Filter();
 
 // router.use(auth.jwt());
 router.use(async (ctx, next) => {
@@ -28,6 +30,6 @@ router.get('/:channelId.m3u8', controller.getFairplayStream.bind(controller));
 router.get('/:channelId/:quality.m3u8', controller.getFairplayVariant.bind(controller));
 router.get('/disney/:brand', auth.jwt(), controller.getDisneyStream.bind(controller));
 router.get('/:title/logo.png', auth.jwt(), controller.getLogo.bind(controller));
-router.get('/schedule.json', auth.jwt(), controller.getScheduleJson.bind(controller));
+router.get('/schedule.json', auth.jwt(), filter.ip.bind(filter), filter.active.bind(filter), controller.getScheduleJson.bind(controller));
 
 module.exports = router;
