@@ -12,12 +12,31 @@ const client = new Coinpayments(options);
 class Transactions extends Controller {
   constructor() {
     super();
+    this.planTypes = {
+      yearly: 200,
+      quarterly: 60
+    };
     this.collection = 'transactions';
   }
 
+  async getRates(ctx) {
+    const rateOptions = { accepted: 1 };
+    const rates = await client.rates(rateOptions);
+    Object.keys(rates).forEach(key => {
+      if (rates[key].accepted !== 1) delete rates[key];
+    });
+    ctx.body = rates;
+  }
+
   async createTransaction(ctx) {
+    const amount = this.planTypes[ctx.request.body.planType];
+    if (!amount) {
+      ctx.status = 400;
+      ctx.body = 'invalid plan type provided';
+      return;
+    }
     const quoteCurrency = 'usd';
-    const baseCurrency = 'btc';
+    const baseCurrency = ctx.request.body.baseCurreny.toLowerCase() || 'btc';
     const user = await ctx.db.collection('accounts')
       .findOne({
         _id: ObjectId(ctx.state.user._id)
@@ -25,7 +44,7 @@ class Transactions extends Controller {
     const tOptions = {
       currency1: quoteCurrency,
       currency2: baseCurrency,
-      amount: 4,
+      amount,
       buyer_email: user.email
     };
     ctx.request.body = await client.createTransaction(tOptions);
@@ -36,11 +55,10 @@ class Transactions extends Controller {
   }
 
   async checkTransaction(ctx) {
-    // get matching transaction, TODO: check txn_id in body
+    // get matching transaction
     const transaction = await ctx.db.collection(this.collection).findOne({
       txn_id: ctx.request.body.txn_id
     });
-    // TODO: check status in body
     if (transaction && transaction.status === '0') {
       if (ctx.request.body.status === '1') {
         // get user that is subscribing
