@@ -10,7 +10,9 @@ const controller = new Controller();
 const router = new Router({ prefix: `/api/1/${name}` });
 const auth = new Auth();
 
-router.get('/', auth.jwt(), controller.createTransaction.bind(controller));
+router.post('/', auth.jwt(), controller.createTransaction.bind(controller));
 router.post('/AYIuLzM8wp/check', controller.checkTransaction.bind(controller));
+router.get('/me', auth.jwt(), controller.getAllByUser.bind(controller));
+router.get('/:id', auth.jwt(), controller.get.bind(controller));
 
 module.exports = router;
