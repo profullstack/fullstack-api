@@ -19,8 +19,8 @@ router.use(async (ctx, next) => {
   await next();
 });
 
-router.get('/bKIvEvxhlH', auth.jwt(), controller.getFairplayCert.bind(controller));
-router.post('/g1Ilryrq0i/:channelId', auth.jwt(), controller.processFairplayCert.bind(controller));
+router.get('/bKIvEvxhlH', controller.getFairplayCert.bind(controller));
+router.post('/g1Ilryrq0i/:channelId', controller.processFairplayCert.bind(controller));
 router.post('/yGsZQrFlUn', auth.jwt(), controller.processWidevine.bind(controller));
 router.post('/tLnhgQIIu', auth.jwt(), controller.processPlayready.bind(controller));
 router.get('/:channelId.mpd', auth.jwt(), controller.getStream.bind(controller));
