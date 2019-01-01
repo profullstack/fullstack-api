@@ -12,15 +12,19 @@ class Accounts extends Controller {
   async updateWhitelist(ctx) {
     if (Array.isArray(ctx.request.body.whitelist) && ctx.request.body.whitelist.length <= 3) {
       // eslint-disable-next-line no-underscore-dangle
-      ctx.body = await ctx.db.collection(this.collection)
-        .updateOne({
+      const user = await ctx.db.collection(this.collection)
+        .findOneAndUpdate({
           _id: ObjectId(ctx.state.user._id)
         }, {
           $set: {
             whitelist: ctx.request.body.whitelist,
             updatedAt: new Date().toISOString()
           }
+        }, {
+          returnOriginal: false,
+          returnNewDocument: true
         });
+      ctx.body = { whitelist: user.value.whitelist };
     } else {
       ctx.status = 400;
       ctx.body = 'whitelist needs to be an array of 3 or less IP addresses';
