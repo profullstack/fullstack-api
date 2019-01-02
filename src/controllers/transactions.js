@@ -1,6 +1,7 @@
 const Controller = require('./controller');
 const Coinpayments = require('coinpayments');
 const ObjectId = require('mongodb').ObjectId;
+const rp = require('request-promise');
 
 const options = {
   key: process.env.COINPAYMENTS_KEY,
@@ -28,6 +29,11 @@ class Transactions extends Controller {
     ctx.body = rates;
   }
 
+  async getStatus(ctx) {
+    const statusOptions = { txid: ctx.request.query.id };
+    ctx.body = await client.getTx(statusOptions);
+  }
+
   async createTransaction(ctx) {
     const amount = this.planTypes[ctx.request.body.planType];
     if (!amount) {
@@ -36,7 +42,7 @@ class Transactions extends Controller {
       return;
     }
     const quoteCurrency = 'usd';
-    const baseCurrency = ctx.request.body.baseCurreny.toLowerCase() || 'btc';
+    const baseCurrency = ctx.request.body.baseCurrency ? ctx.request.body.baseCurrency.toLowerCase() : 'btc';
     const user = await ctx.db.collection('accounts')
       .findOne({
         _id: ObjectId(ctx.state.user._id)
@@ -48,6 +54,9 @@ class Transactions extends Controller {
       buyer_email: user.email
     };
     ctx.request.body = await client.createTransaction(tOptions);
+    const qrBuffer = await rp.get({ uri: ctx.request.body.qrcode_url, encoding: null });
+    delete ctx.request.body.qrcode_url;
+    ctx.request.body.qrcode = qrBuffer.toString('base64');
     ctx.request.body.quoteCurrency = quoteCurrency;
     ctx.request.body.baseCurrency = baseCurrency;
     ctx.request.body.status = '0';

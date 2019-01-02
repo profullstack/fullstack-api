@@ -13,7 +13,8 @@ const auth = new Auth();
 router.post('/', auth.jwt(), controller.createTransaction.bind(controller));
 router.post('/AYIuLzM8wp/check', controller.checkTransaction.bind(controller));
 router.get('/me', auth.jwt(), controller.getAllByUser.bind(controller));
-router.get('/rates', controller.getRates.bind(controller));
+router.get('/rates', auth.jwt(), controller.getRates.bind(controller));
+router.get('/status', auth.jwt(), controller.getStatus.bind(controller));
 router.get('/:id', auth.jwt(), controller.get.bind(controller));
 
 module.exports = router;

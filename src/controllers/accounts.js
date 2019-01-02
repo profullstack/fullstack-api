@@ -61,6 +61,15 @@ class Accounts extends Controller {
     return ctx.db.collection(this.collection).findOne(({ username: ctx.request.body.username }));
   }
 
+  async checkUnique(ctx) {
+    const user = await ctx.db.collection(this.collection)
+      .findOne(({ username: ctx.request.body.username }));
+    const email = await ctx.db.collection(this.collection)
+      .findOne(({ email: ctx.request.body.email }));
+    const isUnique = !!(user || email);
+    return isUnique;
+  }
+
   // new user creation
   async post(ctx) {
     const auth = new Auth();
@@ -83,9 +92,9 @@ class Accounts extends Controller {
       return ctx;
     }
 
-    const existingUser = await this.getUser(ctx);
+    const isUnique = await this.checkUnique(ctx);
 
-    if (existingUser) {
+    if (!isUnique) {
       ctx.status = 401;
       ctx.body = {
         message: 'User already exists'
@@ -96,6 +105,11 @@ class Accounts extends Controller {
     // hash the password and update user
     data.hashedPassword = await auth.hashPassword(ctx.request.body.password);
     data.updatedAt = new Date().toISOString();
+
+    // give new users a one hour free trial
+    const expiresAt = new Date();
+    expiresAt.setHours(expiresAt.getHours() + 1);
+    data.expiresAt = expiresAt.toISOString();
 
     const password = data.password;
     delete data.password;
