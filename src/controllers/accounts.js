@@ -66,7 +66,7 @@ class Accounts extends Controller {
       .findOne(({ username: ctx.request.body.username }));
     const email = await ctx.db.collection(this.collection)
       .findOne(({ email: ctx.request.body.email }));
-    const isUnique = !!(user || email);
+    const isUnique = !user && !email;
     return isUnique;
   }
 
