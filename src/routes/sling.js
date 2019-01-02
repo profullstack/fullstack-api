@@ -23,9 +23,9 @@ router.use(async (ctx, next) => {
 
 router.get('/bKIvEvxhlH', controller.getFairplayCert.bind(controller));
 router.post('/g1Ilryrq0i/:channelId', controller.processFairplayCert.bind(controller));
-router.post('/yGsZQrFlUn', auth.jwt(), controller.processWidevine.bind(controller));
-router.post('/tLnhgQIIu', auth.jwt(), controller.processPlayready.bind(controller));
-router.get('/:channelId.mpd', auth.jwt(), controller.getStream.bind(controller));
+router.post('/yGsZQrFlUn', auth.jwt(), filter.ip.bind(filter), filter.active.bind(filter), controller.processWidevine.bind(controller));
+router.post('/tLnhgQIIu', auth.jwt(), filter.ip.bind(filter), filter.active.bind(filter), controller.processPlayready.bind(controller));
+router.get('/:channelId.mpd', auth.jwt(), filter.ip.bind(filter), filter.active.bind(filter), controller.getStream.bind(controller));
 router.get('/:channelId.m3u8', controller.getFairplayStream.bind(controller));
 router.get('/:channelId/:quality.m3u8', controller.getFairplayVariant.bind(controller));
 router.get('/disney/:brand', auth.jwt(), controller.getDisneyStream.bind(controller));
