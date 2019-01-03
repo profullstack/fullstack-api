@@ -9,6 +9,7 @@
     "bcrypt": "^3.0.3",
     "bluebird": "^3.5.3",
     "coinpayments": "^2.0.1",
+    "debug-http": "^1.1.0",
     "dotenv": "^6.2.0",
     "glob": "^7.1.2",
     "he": "^1.2.0",
