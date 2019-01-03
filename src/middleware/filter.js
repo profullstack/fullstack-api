@@ -3,12 +3,12 @@ const ObjectId = require('mongodb').ObjectId;
 class Filter {
   async getUser(ctx) {
     // eslint-disable-next-line no-underscore-dangle
-    return ctx.db.collection('accounts').findOne(ObjectId(ctx.state.user._id));
+    return ctx.mongo.db(process.env.TORULA_MONGODB_NAME).collection('accounts').findOne(ObjectId(ctx.state.user._id));
   }
 
   async updateWhiteList(ctx, whitelist) {
     // eslint-disable-next-line no-underscore-dangle
-    return ctx.db.collection('accounts')
+    return ctx.mongo.db(process.env.TORULA_MONGODB_NAME).collection('accounts')
       .updateOne({
         _id: ObjectId(ctx.state.user._id)
       }, {
@@ -21,7 +21,7 @@ class Filter {
 
   async updateIsActive(ctx, isActive) {
     // eslint-disable-next-line no-underscore-dangle
-    return ctx.db.collection('accounts')
+    return ctx.mongo.db(process.env.TORULA_MONGODB_NAME).collection('accounts')
       .updateOne({
         _id: ObjectId(ctx.state.user._id)
       }, {

@@ -3,14 +3,16 @@ const https = require('https');
 const fs = require('fs');
 const bodyParser = require('koa-bodyparser');
 const cors = require('kcors');
-const DB = require('./db.mongo');
+const mongo = require('koa-mongo');
+// const DB = require('./db.mongo');
 const Cache = require('./db.redis');
 const routes = require('./routes');
 // const router = require('koa-router');
 // const websockify = require('koa-websocket');
 const middleware = require('./middleware');
+const conf = require('./conf');
 
-const db = new DB();
+// const db = new DB();
 const cache = new Cache();
 // const api = router();
 const app = new Koa();
@@ -23,7 +25,11 @@ app
   .use(cors({
     methods: ['GET', 'PUT', 'POST', 'PATCH', 'DELETE']
   }))
-  .use(db.connect)
+  .use(mongo({
+    uri: conf.env.mongodb.url,
+    max: 100,
+    min: 1
+  }))
   .use(cache.connect);
 
 middleware(app);

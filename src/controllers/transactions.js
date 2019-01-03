@@ -23,9 +23,10 @@ class Transactions extends Controller {
   async getRates(ctx) {
     const rateOptions = { accepted: 1 };
     const rates = await client.rates(rateOptions);
-    Object.keys(rates).forEach(key => {
-      if (rates[key].accepted !== 1) delete rates[key];
-    });
+    Object.keys(rates)
+      .forEach(key => {
+        if (rates[key].accepted !== 1) delete rates[key];
+      });
     ctx.body = rates;
   }
 
@@ -43,7 +44,8 @@ class Transactions extends Controller {
     }
     const quoteCurrency = 'usd';
     const baseCurrency = ctx.request.body.baseCurrency ? ctx.request.body.baseCurrency.toLowerCase() : 'btc';
-    const user = await ctx.db.collection('accounts')
+    const user = await ctx.mongo.db(process.env.TORULA_MONGODB_NAME)
+      .collection('accounts')
       .findOne({
         _id: ObjectId(ctx.state.user._id)
       });
@@ -54,7 +56,10 @@ class Transactions extends Controller {
       buyer_email: user.email
     };
     ctx.request.body = await client.createTransaction(tOptions);
-    const qrBuffer = await rp.get({ uri: ctx.request.body.qrcode_url, encoding: null });
+    const qrBuffer = await rp.get({
+      uri: ctx.request.body.qrcode_url,
+      encoding: null
+    });
     delete ctx.request.body.qrcode_url;
     ctx.request.body.qrcode = qrBuffer.toString('base64');
     ctx.request.body.quoteCurrency = quoteCurrency;
@@ -65,36 +70,48 @@ class Transactions extends Controller {
 
   async checkTransaction(ctx) {
     // get matching transaction
-    const transaction = await ctx.db.collection(this.collection).findOne({
-      txn_id: ctx.request.body.txn_id
-    });
+    const transaction = await ctx.mongo
+      .db(process.env.TORULA_MONGODB_NAME)
+      .collection(this.collection)
+      .findOne({
+        txn_id: ctx.request.body.txn_id
+      });
+
     if (transaction && transaction.status === '0') {
       if (ctx.request.body.status === '1') {
         // get user that is subscribing
-        const user = await ctx.db.collection('accounts').findOne({
-          _id: transaction.createdBy
-        });
+        const user = await ctx.mongo.db(process.env.TORULA_MONGODB_NAME)
+          .collection('accounts')
+          .findOne({
+            _id: transaction.createdBy
+          });
         // top up expiration date
         let expDate = user.expiresAt ? new Date(user.expiresAt) : new Date();
         expDate = new Date(expDate.setFullYear(expDate.getFullYear() + 1));
-        await ctx.db.collection('accounts').updateOne({
-          _id: transaction.createdBy
+        await ctx.mongo
+          .db(process.env.TORULA_MONGODB_NAME)
+          .collection('accounts')
+          .updateOne({
+            _id: transaction.createdBy
+          }, {
+            $set: {
+              expiresAt: expDate.toISOString(),
+              updatedAt: new Date().toISOString()
+            }
+          });
+      }
+      // update transaction status
+      ctx.body = await ctx.mongo
+        .db(process.env.TORULA_MONGODB_NAME)
+        .collection(this.collection)
+        .updateOne({
+          txn_id: ctx.request.body.txn_id
         }, {
           $set: {
-            expiresAt: expDate.toISOString(),
+            status: ctx.request.body.status.toString(),
             updatedAt: new Date().toISOString()
           }
         });
-      }
-      // update transaction status
-      ctx.body = await ctx.db.collection(this.collection).updateOne({
-        txn_id: ctx.request.body.txn_id
-      }, {
-        $set: {
-          status: ctx.request.body.status.toString(),
-          updatedAt: new Date().toISOString()
-        }
-      });
     } else {
       ctx.status = 500;
       ctx.body = 'transaction already completed, wasn\'t completed, or doesn\'t exist';
