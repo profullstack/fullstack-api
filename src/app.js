@@ -4,6 +4,7 @@ const https = require('https');
 const fs = require('fs');
 const bodyParser = require('koa-bodyparser');
 const cors = require('kcors');
+const debugHttp = require('debug-http');
 const mongo = require('koa-mongo');
 // const DB = require('./db.mongo');
 const Cache = require('./db.redis');
@@ -13,6 +14,7 @@ const routes = require('./routes');
 const middleware = require('./middleware');
 const conf = require('./conf');
 
+debugHttp();
 // const db = new DB();
 const cache = new Cache();
 // const api = router();
