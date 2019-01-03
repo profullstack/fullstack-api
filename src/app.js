@@ -1,4 +1,5 @@
 const Koa = require('koa');
+const logger = require('koa-logger');
 const https = require('https');
 const fs = require('fs');
 const bodyParser = require('koa-bodyparser');
@@ -25,6 +26,7 @@ app
   .use(cors({
     methods: ['GET', 'PUT', 'POST', 'PATCH', 'DELETE']
   }))
+  .use(logger())
   .use(mongo({
     uri: conf.env.mongodb.url,
     max: 10000,
