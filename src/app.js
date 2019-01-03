@@ -27,7 +27,7 @@ app
   }))
   .use(mongo({
     uri: conf.env.mongodb.url,
-    max: 100,
+    max: 10000,
     min: 1
   }))
   .use(cache.connect);
