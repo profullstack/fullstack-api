@@ -12,7 +12,7 @@ class Accounts extends Controller {
   async updateWhitelist(ctx) {
     if (Array.isArray(ctx.request.body.whitelist) && ctx.request.body.whitelist.length <= 3) {
       // eslint-disable-next-line no-underscore-dangle
-      const user = await ctx.db.collection(this.collection)
+      const user = await ctx.mongo.db(process.env.TORULA_MONGODB_NAME).collection(this.collection)
         .findOneAndUpdate({
           _id: ObjectId(ctx.state.user._id)
         }, {
@@ -58,13 +58,16 @@ class Accounts extends Controller {
   }
 
   async getUser(ctx) {
-    return ctx.db.collection(this.collection).findOne(({ username: ctx.request.body.username }));
+    return ctx.mongo
+      .db(process.env.TORULA_MONGODB_NAME)
+      .collection(this.collection)
+      .findOne(({ username: ctx.request.body.username }));
   }
 
   async checkUnique(ctx) {
-    const user = await ctx.db.collection(this.collection)
+    const user = await ctx.mongo.db(process.env.TORULA_MONGODB_NAME).collection(this.collection)
       .findOne(({ username: ctx.request.body.username }));
-    const email = await ctx.db.collection(this.collection)
+    const email = await ctx.mongo.db(process.env.TORULA_MONGODB_NAME).collection(this.collection)
       .findOne(({ email: ctx.request.body.email }));
     const isUnique = !user && !email;
     return isUnique;
@@ -115,18 +118,21 @@ class Accounts extends Controller {
     delete data.password;
     delete data.passwordRepeat;
 
-    const newUser = await ctx.db.collection(this.collection).findOneAndUpdate({
-      username: data.username
-    }, {
-      $set: data,
-      $setOnInsert: {
-        createdAt: new Date().toISOString()
-      }
-    }, {
-      upsert: true,
-      returnOriginal: false,
-      returnNewDocument: true
-    });
+    const newUser = await ctx.mongo
+      .db(process.env.TORULA_MONGODB_NAME)
+      .collection(this.collection)
+      .findOneAndUpdate({
+        username: data.username
+      }, {
+        $set: data,
+        $setOnInsert: {
+          createdAt: new Date().toISOString()
+        }
+      }, {
+        upsert: true,
+        returnOriginal: false,
+        returnNewDocument: true
+      });
 
     const isOk = await auth.compare(password, newUser.value.hashedPassword);
     delete newUser.value.hashedPassword;
@@ -154,15 +160,22 @@ class Accounts extends Controller {
     const user = await this.getUser(ctx);
     let isOk = false;
 
-    if (user && ctx.request.body.username && ctx.request.body.password) {
+    if (
+      user &&
+      ctx.request.body.username &&
+      ctx.request.body.password
+    ) {
       isOk = await auth.compare(ctx.request.body.password, user.hashedPassword);
     }
 
     if (isOk) {
       try {
-        const res = await ctx.db.collection(this.collection).removeOne({
-          _id: ObjectId(ctx.params.id)
-        });
+        const res = await ctx.mongo
+          .db(process.env.TORULA_MONGODB_NAME)
+          .collection(this.collection)
+          .removeOne({
+            _id: ObjectId(ctx.params.id)
+          });
         ctx.status = 204;
         ctx.body = res;
       } catch (err) {
@@ -178,7 +191,7 @@ class Accounts extends Controller {
   }
 
   async get(ctx) {
-    const data = await ctx.db.collection(this.collection)
+    const data = await ctx.mongo.db(process.env.TORULA_MONGODB_NAME).collection(this.collection)
       .findOne({
         _id: ObjectId(ctx.params.id)
       });
