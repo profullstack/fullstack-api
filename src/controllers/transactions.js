@@ -70,13 +70,14 @@ class Transactions extends Controller {
 
   async checkTransaction(ctx) {
     // get matching transaction
+    console.log(ctx.request);
+    console.log(ctx.request.body);
     const transaction = await ctx.mongo
       .db(process.env.TORULA_MONGODB_NAME)
       .collection(this.collection)
       .findOne({
         txn_id: ctx.request.body.txn_id
       });
-
     if (transaction && transaction.status === '0') {
       if (ctx.request.body.status === '1') {
         // get user that is subscribing
