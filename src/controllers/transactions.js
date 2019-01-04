@@ -14,8 +14,14 @@ class Transactions extends Controller {
   constructor() {
     super();
     this.planTypes = {
-      yearly: 200,
-      quarterly: 60
+      yearly: {
+        amount: 200,
+        subscriptionLength: 60 * 60 * 24 * 365
+      },
+      quarterly: {
+        amount: 60,
+        subscriptionLength: 60 * 60 * 24 * 122
+      }
     };
     this.collection = 'transactions';
   }
@@ -36,8 +42,8 @@ class Transactions extends Controller {
   }
 
   async createTransaction(ctx) {
-    const amount = this.planTypes[ctx.request.body.planType];
-    if (!amount) {
+    const planData = this.planTypes[ctx.request.body.planType];
+    if (!planData) {
       ctx.status = 400;
       ctx.body = 'invalid plan type provided';
       return;
@@ -52,7 +58,7 @@ class Transactions extends Controller {
     const tOptions = {
       currency1: quoteCurrency,
       currency2: baseCurrency,
-      amount,
+      amount: planData.amount,
       buyer_email: user.email
     };
     ctx.request.body = await client.createTransaction(tOptions);
@@ -64,6 +70,7 @@ class Transactions extends Controller {
     ctx.request.body.qrcode = qrBuffer.toString('base64');
     ctx.request.body.quoteCurrency = quoteCurrency;
     ctx.request.body.baseCurrency = baseCurrency;
+    ctx.request.body.planType = planData;
     ctx.request.body.status = '0';
     await this.post(ctx);
   }
@@ -87,8 +94,16 @@ class Transactions extends Controller {
             _id: transaction.createdBy
           });
         // top up expiration date
-        let expDate = user.expiresAt ? new Date(user.expiresAt) : new Date();
-        expDate = new Date(expDate.setFullYear(expDate.getFullYear() + 1));
+        let expDate = new Date();
+        if (user.expiresAt) {
+          const expiresAt = new Date(user.expiresAt);
+          // only top up expiresAt if its greater than the current date
+          if (expiresAt > expDate) {
+            expDate = expiresAt;
+          }
+        }
+        const newTime = expDate.getSeconds() + transaction.planType.subscriptionLength;
+        expDate = new Date(expDate.setSeconds(newTime));
         await ctx.mongo
           .db(process.env.TORULA_MONGODB_NAME)
           .collection('accounts')
