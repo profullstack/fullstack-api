@@ -22,9 +22,7 @@ const app = new Koa();
 // const socket = websockify(app);
 
 app
-  .use(bodyParser({
-    enableTypes: ['json']
-  }))
+  .use(bodyParser())
   .use(cors({
     methods: ['GET', 'PUT', 'POST', 'PATCH', 'DELETE']
   }))

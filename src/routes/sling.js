@@ -2,7 +2,6 @@ const path = require('path');
 const Router = require('koa-router');
 const Auth = require('../middleware/authenticate');
 const Filter = require('../middleware/filter');
-const getRawBody = require('raw-body');
 
 const name = path.basename(__filename, '.js');
 
@@ -14,12 +13,6 @@ const auth = new Auth();
 const filter = new Filter();
 
 // router.use(auth.jwt());
-router.use(async (ctx, next) => {
-  if (ctx.request.method === 'POST') {
-    ctx.text = await getRawBody(ctx.req);
-  }
-  await next();
-});
 
 router.get('/bKIvEvxhlH', controller.getFairplayCert.bind(controller));
 router.post('/g1Ilryrq0i/:channelId', controller.processFairplayCert.bind(controller));
