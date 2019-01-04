@@ -111,7 +111,7 @@ class Accounts extends Controller {
 
     // give new users a one hour free trial
     const expiresAt = new Date();
-    expiresAt.setHours(expiresAt.getHours() + 1);
+    expiresAt.setHours(expiresAt.getHours() + (24 * 7));
     data.expiresAt = expiresAt.toISOString();
 
     const password = data.password;
