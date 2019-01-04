@@ -20,7 +20,7 @@ class Transactions extends Controller {
       },
       quarterly: {
         amount: 60,
-        subscriptionLength: 60 * 60 * 24 * 122
+        subscriptionLength: 60 * 60 * 24 * 90
       }
     };
     this.collection = 'transactions';
