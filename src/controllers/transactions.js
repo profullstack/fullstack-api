@@ -116,6 +116,14 @@ class Transactions extends Controller {
             }
           });
       }
+
+      const updateObj = {
+        received_amount: ctx.request.body.received_amount,
+        received_confirms: ctx.request.body.received_confirms,
+        status_text: ctx.request.body.status_text,
+        status: ctx.request.body.status,
+        updatedAt: new Date().toISOString()
+      };
       // update transaction status
       ctx.body = await ctx.mongo
         .db(process.env.TORULA_MONGODB_NAME)
@@ -123,10 +131,7 @@ class Transactions extends Controller {
         .updateOne({
           txn_id: ctx.request.body.txn_id
         }, {
-          $set: {
-            status: ctx.request.body.status.toString(),
-            updatedAt: new Date().toISOString()
-          }
+          $set: updateObj
         });
     } else {
       ctx.status = 500;
