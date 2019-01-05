@@ -22,5 +22,5 @@ do
 done
 
 version=$(jq -r .version package.json)
-say "torula API is live!"
+say "torula backend is live!"
 exit

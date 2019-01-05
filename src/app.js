@@ -29,7 +29,7 @@ app
   .use(logger())
   .use(mongo({
     uri: conf.env.mongodb.url,
-    max: 10000,
+    max: 50000,
     min: 1
   }))
   .use(cache.connect);
