@@ -51,8 +51,10 @@
     "supertest-as-promised": "^4.0.2"
   },
   "scripts": {
-    "deploy:prod": "rm .env && ln -s .env.prod .env && ./bin/deploy.sh",
-    "deploy:dev": "rm .env && ln -s .env.dev .env && ./bin/deploy.sh",
+    "set:prod": "rm .env && ln -s .env.prod .env",
+    "set:dev": "rm .env && ln -s .env.dev .env ",
+    "deploy:prod": "npm run set:prod && ./bin/deploy.sh",
+    "deploy:dev": "npm run set:dev && ./bin/deploy.sh",
     "test": "NODE_ENV=test mocha './test/**/*-spec.js'",
     "start": "NODE_ENV=development npx nodemon index.js",
     "start:cluster": "NODE_ENV=development npx nodemon cluster.js",
