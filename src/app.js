@@ -2,7 +2,7 @@ const Koa = require('koa');
 const logger = require('koa-logger');
 const https = require('https');
 const fs = require('fs');
-const bodyParser = require('koa-bodyparser');
+// const bodyParser = require('koa-bodyparser');
 const cors = require('kcors');
 const debugHttp = require('debug-http');
 const mongo = require('koa-mongo');
@@ -22,7 +22,6 @@ const app = new Koa();
 // const socket = websockify(app);
 
 app
-  .use(bodyParser())
   .use(cors({
     methods: ['GET', 'PUT', 'POST', 'PATCH', 'DELETE']
   }))

@@ -1,6 +1,7 @@
 const path = require('path');
 const Router = require('koa-router');
 const Auth = require('../middleware/authenticate');
+const bodyParser = require('koa-bodyparser');
 
 const name = path.basename(__filename, '.js');
 
@@ -9,6 +10,8 @@ const Controller = require(`../controllers/${name}`);
 const controller = new Controller();
 const router = new Router({ prefix: `/api/1/${name}` });
 const auth = new Auth();
+
+router.use(bodyParser());
 
 router.get('/', auth.jwt(), controller.getAll.bind(controller));
 router.get('/me', auth.jwt(), controller.getAllByUser.bind(controller));
