@@ -227,6 +227,7 @@ class Sling extends Controller {
               // title: Buffer.from(channel.channel_name).toString('base64'),
               title: he.encode(channel.channel_name),
               stream_url: `/api/1/sling/${channel.guid}.mpd`,
+              stream_id: channel.guid,
               desc_image: thumbnail,
               drm: {
                 protocol: 'mpd',
