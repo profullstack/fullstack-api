@@ -33,7 +33,7 @@ class Sling extends Controller {
 
   async getStream(ctx) {
     try {
-      ctx.body = await this.getStreamHelper(ctx, ctx.params.channelId);
+      ctx.body = await this.getStreamHelper(ctx, ctx.params.channelId, ctx.request.query.rewrite);
       ctx.type = 'application/dash+xml';
     } catch (err) {
       ctx.status = 500;
@@ -140,6 +140,43 @@ class Sling extends Controller {
       ctx.status = 500;
       ctx.body = err.message;
     }
+  }
+
+  rewriteStream(xml) {
+    return new Promise((resolve, reject) => {
+      XmlParser.parseString(xml, (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          const currentTime = new Date();
+          const startTime = new Date(result.MPD.$.availabilityStartTime);
+          const timeDiff = (currentTime - startTime) / 1000;
+          const segmentDuration = parseFloat(result.MPD.$.maxSegmentDuration.replace('PT', ''));
+          if (result.MPD.Period.length === 2) {
+            console.log('2 periods');
+            const periodStart = parseFloat(result.MPD.Period[1].$.start.replace('PT', ''));
+            if (timeDiff >= periodStart) {
+              result.MPD.Period.splice(0, 1);
+              // eslint-disable-next-line max-len
+              result.MPD.Period[0].AdaptationSet[0].SegmentTemplate[0].$.startNumber -= (periodStart / (segmentDuration / 2));
+              result.MPD.Period[0].$.start = 'PT0.000000S';
+              result.MPD.Period[0].$.id = '1';
+            } else {
+              result.MPD.Period.splice(1, 1);
+            }
+          }
+          const period = result.MPD.Period[0];
+          const duration = parseFloat(period.$.duration.replace('PT', ''));
+          // eslint-disable-next-line max-len
+          const startNumber = parseInt(period.AdaptationSet[0].SegmentTemplate[0].$.startNumber - ((duration / segmentDuration) + (timeDiff / segmentDuration)), 10);
+          period.AdaptationSet.forEach(adaptationSet => {
+            adaptationSet.SegmentTemplate[0].$.startNumber = startNumber;
+          });
+          const builder = new XmlJs.Builder();
+          resolve(builder.buildObject(result));
+        }
+      });
+    });
   }
 
   getDisneyStreamHelper(brand) {
@@ -267,7 +304,7 @@ class Sling extends Controller {
     });
   }
 
-  getStreamHelper(ctx, channelId) {
+  getStreamHelper(ctx, channelId, rewrite = false) {
     return ctx.cachePromise(channelId).then(reply => {
       if (reply) {
         return reply;
@@ -275,6 +312,7 @@ class Sling extends Controller {
       const infoApi = `http://cbd46b77.cdn.cms.movetv.com/cms/api/channels/${channelId}/schedule/now/playback_info.qvt`;
       return rp.get({ url: infoApi, json: true }).then(res => {
         return rp.get(res.playback_info.dash_manifest_url).then(dash => {
+          if (rewrite) return this.rewriteStream(dash);
           return new Promise((resolve, reject) => {
             XmlParser.parseString(dash, (err, result) => {
               if (err) {
