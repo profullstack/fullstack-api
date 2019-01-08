@@ -33,7 +33,8 @@ class Sling extends Controller {
 
   async getStream(ctx) {
     try {
-      ctx.body = await this.getStreamHelper(ctx, ctx.params.channelId, ctx.request.query.rewrite);
+      const rewrite = ctx.request.query.rewrite === 'true';
+      ctx.body = await this.getStreamHelper(ctx, ctx.params.channelId, rewrite);
       ctx.type = 'application/dash+xml';
     } catch (err) {
       ctx.status = 500;
