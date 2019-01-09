@@ -9,12 +9,13 @@ class Mongo {
 
     this.connect = this.connect.bind(this);
     this.close = this.close.bind(this);
+    this.mongoClient = MongoClient.connect(this.dbUrl);
   }
 
   async connect(ctx, next) {
     try {
       console.log('Connecting to database: ', this.dbUrl);
-      ctx.db = await MongoClient.connect(this.dbUrl);
+      ctx.db = await this.mongoClient;
     } catch (err) {
       console.warn('unable to connect: ', this.dbUrl);
       ctx.status = 500;
