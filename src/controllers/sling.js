@@ -270,10 +270,10 @@ class Sling extends Controller {
                       ctx.cache.setex(channel.current_asset, cacheTime, JSON.stringify(item));
                       items.items.push(item);
                     } else {
-                      ctx.cache.setex(channel.current_asset, 86400, 'noop');
+                      ctx.cache.setex(channel.current_asset, 300, 'noop');
                     }
                   } else {
-                    ctx.cache.setex(channel.current_asset, 86400, 'noop');
+                    ctx.cache.setex(channel.current_asset, 300, 'noop');
                   }
                 });
               });
