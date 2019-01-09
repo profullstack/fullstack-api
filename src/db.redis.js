@@ -14,13 +14,14 @@ class Redis {
     this.dbUrl = conf.env.redis.url;
     this.connect = this.connect.bind(this);
     this.close = this.close.bind(this);
+    this.client = redis.createClient({
+      url: this.dbUrl
+    });
   }
 
   async connect(ctx, next) {
     try {
-      ctx.cache = await redis.createClient({
-        url: this.dbUrl
-      });
+      ctx.cache = this.client;
       ctx.cachePromise = promisify(ctx.cache.get).bind(ctx.cache);
     } catch (err) {
       console.warn('unable to connect: ', this.dbUrl);
