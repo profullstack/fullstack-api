@@ -21,7 +21,7 @@ class Redis {
 
   async connect(ctx, next) {
     try {
-      ctx.cache = this.client;
+      ctx.cache = await this.client;
       ctx.cachePromise = promisify(ctx.cache.get).bind(ctx.cache);
     } catch (err) {
       console.warn('unable to connect: ', this.dbUrl);
