@@ -5,7 +5,7 @@ const m3u8 = require('m3u8');
 const url = require('url');
 const uuidv4 = require('uuid/v4');
 const XmlJs = require('xml2js');
-const sharp = require('sharp');
+// const sharp = require('sharp');
 
 const XmlParser = new XmlJs.Parser();
 const widevineUrl = 'http://p-drmwv.movetv.com/proxy';
@@ -298,14 +298,12 @@ class Sling extends Controller {
       return this.getRawSchedule(ctx).then(res => {
         const channel = res.channels.find(x => x.channel_name === channelName);
         if (channel && channel.thumbnail_cropped && channel.thumbnail_cropped.url) {
+          channel.thumbnail_cropped.url = channel.thumbnail_cropped.url
+            .replace('.png', '/width=150&height=0')
+            .replace('/cms/', '/');
           return rp.get({ url: channel.thumbnail_cropped.url, encoding: null }).then(img => {
-            return sharp(img)
-              .resize(150)
-              .toBuffer()
-              .then(data => {
-                ctx.cache.setex(cacheId, 86400, data.toString('base64'));
-                return data;
-              });
+            ctx.cache.setex(cacheId, 86400, img.toString('base64'));
+            return img;
           });
         }
       });
