@@ -2,13 +2,10 @@ module.exports = {
   apps : [{
     name: 'torula-backend',
     script: 'index.js',
-    args: '-i max --watch',
-
-    // Options reference: https://pm2.io/doc/en/runtime/reference/ecosystem-file/
-    instances: 1,
+    instances: "max",
     autorestart: true,
     watch: false,
-    max_memory_restart: '1G',
+    max_memory_restart: '1',
     env: {
       NODE_ENV: 'development'
     },
@@ -16,7 +13,6 @@ module.exports = {
       NODE_ENV: 'production'
     }
   }],
-
   // deploy : {
   //   production : {
   //     user : 'node',

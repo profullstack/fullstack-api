@@ -5,6 +5,7 @@
   "description": "Torula API starter kit with Koa, mongodb and websockets.",
   "main": "index.js",
   "dependencies": {
+    "@chovy/m3u8": "^1.2.0",
     "axios": "^0.18.0",
     "bcrypt": "^3.0.3",
     "bluebird": "^3.5.3",
@@ -25,7 +26,6 @@
     "koa-router": "^7.4.0",
     "koa-websocket": "^4.1.0",
     "lodash": "^4.17.11",
-    "m3u8": "0.0.8",
     "minimist": "^1.2.0",
     "mongodb": "^2.x",
     "pm2": "^3.x",
