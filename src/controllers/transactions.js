@@ -15,12 +15,16 @@ class Transactions extends Controller {
     super();
     this.planTypes = {
       yearly: {
-        amount: 200,
+        amount: 125,
         subscriptionLength: 60 * 60 * 24 * 365
       },
       quarterly: {
-        amount: 60,
+        amount: 40,
         subscriptionLength: 60 * 60 * 24 * 90
+      },
+      monthly: {
+        amount: 15,
+        subscriptionLength: 60 * 60 * 24 * 30
       }
     };
     this.collection = 'transactions';
