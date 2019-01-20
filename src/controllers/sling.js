@@ -5,6 +5,7 @@ const m3u8 = require('@chovy/m3u8');
 const url = require('url');
 const uuidv4 = require('uuid/v4');
 const XmlJs = require('xml2js');
+const slugify = require('slugify');
 // const sharp = require('sharp');
 
 const XmlParser = new XmlJs.Parser();
@@ -24,7 +25,14 @@ class Sling extends Controller {
 
   async getScheduleJson(ctx) {
     try {
-      ctx.body = await this.getScheduleJsonHelper(ctx);
+      const body = await this.getScheduleJsonHelper(ctx);
+      // filter channels based on category
+      if (ctx.request.query.category_id) {
+        body.items = body.items.filter(x => {
+          return x.channel.category_id === ctx.request.query.category_id;
+        });
+      }
+      ctx.body = body;
       ctx.type = 'application/json';
     } catch (err) {
       ctx.status = 500;
@@ -224,6 +232,7 @@ class Sling extends Controller {
         res.channels.forEach(channel => {
           // let thumbnail = channel.image && channel.image.url ? channel.image.url : null
           const thumbnail = `/api/1/sling/${encodeURIComponent(channel.channel_name)}/logo.png`;
+          const category = channel.genre ? slugify(channel.genre[0].toLowerCase()) : null;
           const item = {
             channel: {
               // title: Buffer.from(channel.channel_name).toString('base64'),
@@ -237,7 +246,7 @@ class Sling extends Controller {
                 license_url: '/api/1/sling/yGsZQrFlUn'
               },
               description: null,
-              category_id: null
+              category_id: category
             }
           };
           const options = { url: channel.current_asset, simple: false, json: true };
@@ -484,6 +493,20 @@ ${segment}`);
         return schedule;
       });
     });
+  }
+
+  async getCategories(ctx) {
+    let categories = new Set();
+    const schedule = await this.getRawSchedule(ctx);
+    schedule.channels.forEach(channel => {
+      if (Array.isArray(channel.genre)) categories.add(channel.genre[0]);
+    });
+    categories = [...categories];
+    const body = { categories: [] };
+    categories.forEach(category => {
+      body.categories.push({ name: category, id: slugify(category.toLowerCase()) });
+    });
+    ctx.body = body;
   }
 }
 

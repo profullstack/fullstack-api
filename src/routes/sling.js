@@ -31,5 +31,6 @@ router.get('/:channelId/:quality.m3u8', controller.getFairplayVariant.bind(contr
 router.get('/disney/:brand', auth.jwt(), controller.getDisneyStream.bind(controller));
 router.get('/:title/logo.png', controller.getLogo.bind(controller));
 router.get('/schedule.json', auth.jwt(), filter.ip.bind(filter), filter.active.bind(filter), controller.getScheduleJson.bind(controller));
+router.get('/categories', controller.getCategories.bind(controller));
 
 module.exports = router;
