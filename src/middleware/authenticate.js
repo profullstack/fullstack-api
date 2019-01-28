@@ -18,6 +18,20 @@ class Authenticate {
     return bcrypt.compare(plaintext, hash);
   }
 
+
+  async isAdmin(ctx, next) {
+    const isAdmin = ctx.state.user && ctx.state.user.role === 'admin';
+
+    if (!isAdmin) {
+      ctx.status = 403;
+      ctx.body = 'You are not authorized';
+
+      return;
+    }
+
+    await next();
+  }
+
   // see https://www.theodo.fr/blog/2016/11/securize-a-koa-api-with-a-jwt-token/
   jwt() {
     return jwt({ secret: process.env.TORULA_API_SHARED_SECRET });

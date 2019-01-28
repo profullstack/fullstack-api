@@ -13,6 +13,7 @@ const auth = new Auth();
 
 router.use(bodyParser());
 
+router.get('/', auth.jwt(), auth.isAdmin.bind(auth), controller.getAll.bind(controller));
 router.post('/', auth.jwt(), controller.createTransaction.bind(controller));
 router.post('/AYIuLzM8wp/check', controller.checkTransaction.bind(controller));
 router.get('/me', auth.jwt(), controller.getAllByUser.bind(controller));

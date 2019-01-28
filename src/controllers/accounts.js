@@ -53,7 +53,7 @@ class Accounts extends Controller {
       ctx.status = 201;
       ctx.body = {
         token: jwt.sign({
-          role: 'user',
+          role: user.role,
           _id: user._id
         }, process.env.TORULA_API_SHARED_SECRET),
         message: 'Successfully logged in!',
