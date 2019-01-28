@@ -15,6 +15,6 @@ const router = new Router({ prefix: `/api/1/${name}` });
 router.use(bodyParser());
 
 // lowercase all users in mongo
-router.get('/lowerCaseNames', auth.isAdmin.bind(auth), controller.lowerCaseNames.bind(controller));
+router.get('/lowerCaseNames', auth.jwt(), auth.isAdmin.bind(auth), controller.lowerCaseNames.bind(controller));
 
 module.exports = router;

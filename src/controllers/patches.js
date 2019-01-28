@@ -13,13 +13,19 @@ class Patches extends Controller {
     for (const user of accounts) {
       user.username = user.username.toLowerCase().trim();
       user.email = user.email.toLowerCase().trim();
-      if (accounts.some(x => (
+      const duplicates = accounts.filter(x => (
         user.username === x.username.toLowerCase().trim() ||
-            user.email === x.email.toLowerCase().trim()) &&
-            x._id !== user._id)
-      ) {
+        user.email === x.email.toLowerCase().trim()) &&
+        x._id !== user._id);
+
+      if (duplicates.length) {
         ctx.status = 500;
-        ctx.body = 'duplicate users found';
+        ctx.body = {
+          error: {
+            message: 'duplicate users found'
+          },
+          duplicates
+        };
         return;
       }
       collection.save(user);

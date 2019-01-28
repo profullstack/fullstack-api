@@ -20,6 +20,7 @@ class Authenticate {
 
 
   async isAdmin(ctx, next) {
+    console.log(ctx.state.user);
     const isAdmin = ctx.state.user && ctx.state.user.role === 'admin';
 
     if (!isAdmin) {
