@@ -34,6 +34,12 @@ class Accounts extends Controller {
 
   async login(ctx) {
     const auth = new Auth();
+    if (ctx.request.body.username) {
+      ctx.request.body.username = ctx.request.body.username.trim().toLowerCase();
+    }
+    if (ctx.request.body.email) {
+      ctx.request.body.email = ctx.request.body.email.trim().toLowerCase();
+    }
     const user = await this.getUser(ctx);
 
     if (!user) {
@@ -86,6 +92,12 @@ class Accounts extends Controller {
   // new user creation
   async post(ctx) {
     const auth = new Auth();
+    if (ctx.request.body.username) {
+      ctx.request.body.username = ctx.request.body.username.trim().toLowerCase();
+    }
+    if (ctx.request.body.email) {
+      ctx.request.body.email = ctx.request.body.email.trim().toLowerCase();
+    }
     const data = ctx.request.body;
 
     if (ctx.request.body.password !== ctx.request.body.passwordRepeat) {
