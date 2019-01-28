@@ -59,7 +59,7 @@
     "deploy:prod": "npm run set:prod && ./bin/deploy.sh",
     "deploy:dev": "npm run set:dev && ./bin/deploy.sh",
     "test": "NODE_ENV=test mocha './test/**/*-spec.js'",
-    "start": "NODE_ENV=development npx nodemon index.js",
+    "start": "npm run set:dev && NODE_ENV=development npx nodemon index.js",
     "start:cluster": "NODE_ENV=development npx nodemon cluster.js",
     "start:production": "NODE_ENV=production npx pm2 start index.js --name='torula-backend'",
     "restart:production": "NODE_ENV=production npx pm2 reload torula-backend --update-env",
