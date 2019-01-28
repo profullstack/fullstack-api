@@ -35,6 +35,16 @@ class Accounts extends Controller {
   async login(ctx) {
     const auth = new Auth();
     const user = await this.getUser(ctx);
+
+    if (!user) {
+      ctx.status = 401;
+      ctx.body = {
+        message: 'Authentication failed'
+      };
+
+      return;
+    }
+
     const isOk = await auth.compare(ctx.request.body.password, user.hashedPassword);
 
     delete user.hashedPassword;

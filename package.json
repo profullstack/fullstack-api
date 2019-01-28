@@ -61,7 +61,7 @@
     "start": "NODE_ENV=development npx nodemon index.js",
     "start:cluster": "NODE_ENV=development npx nodemon cluster.js",
     "start:production": "NODE_ENV=production npx pm2 start index.js --name='torula-backend'",
-    "restart:production": "NODE_ENV=production npx pm2 restart torula-backend --update-env",
+    "restart:production": "NODE_ENV=production npx pm2 reload torula-backend --update-env",
     "lint": "npx eslint ./src/",
     "preversion": "npm test",
     "postversion": "git push && git push --tags",
