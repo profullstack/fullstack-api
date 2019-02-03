@@ -9,6 +9,11 @@ class Controller {
       .toArray();
   }
 
+  async getUserById(ctx) {
+    // eslint-disable-next-line no-underscore-dangle
+    return ctx.mongo.db(process.env.TORULA_MONGODB_NAME).collection('accounts').findOne(ObjectId(ctx.state.user._id));
+  }
+
   async noop(ctx) {
     ctx.status = 200;
   }

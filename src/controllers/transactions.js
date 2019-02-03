@@ -16,15 +16,18 @@ class Transactions extends Controller {
     this.planTypes = {
       yearly: {
         amount: 125,
-        subscriptionLength: 60 * 60 * 24 * 365
+        subscriptionLength: 60 * 60 * 24 * 365,
+        referralLength: 60 * 60 * 24 * 30
       },
       quarterly: {
         amount: 40,
-        subscriptionLength: 60 * 60 * 24 * 90
+        subscriptionLength: 60 * 60 * 24 * 90,
+        referralLength: 60 * 60 * 24 * 14
       },
       monthly: {
         amount: 15,
-        subscriptionLength: 60 * 60 * 24 * 30
+        subscriptionLength: 60 * 60 * 24 * 30,
+        referralLength: 60 * 60 * 24 * 7
       }
     };
     this.collection = 'transactions';
@@ -76,7 +79,47 @@ class Transactions extends Controller {
     ctx.request.body.baseCurrency = baseCurrency;
     ctx.request.body.planType = planData;
     ctx.request.body.status = '0';
+    ctx.request.body.referred = user.referred;
     await this.post(ctx);
+  }
+
+  getStartTime(userExpiresAt) {
+    let expDate = new Date();
+    if (userExpiresAt) {
+      const expiresAt = new Date(userExpiresAt);
+      // only top up expiresAt if its greater than the current date
+      if (expiresAt > expDate) {
+        expDate = expiresAt;
+      }
+    }
+    return expDate;
+  }
+
+  async getAllReferralsByUser(ctx) {
+    const user = await this.getUserById(ctx);
+    const transactions = await ctx.mongo
+      .db(process.env.TORULA_MONGODB_NAME)
+      .collection(this.collection)
+      .find({ 'referred.user': user.username }).toArray();
+    ctx.body = transactions;
+  }
+
+  async getAllReferrals(ctx) {
+    const transactions = await ctx.mongo
+      .db(process.env.TORULA_MONGODB_NAME)
+      .collection(this.collection)
+      .aggregate([
+        {
+          $match: { 'referred.user': { $ne: null }, status: '1', 'referred.reseller': true }
+        },
+        {
+          $group: {
+            _id: '$referred.user',
+            totalReferredAmount: { $sum: '$planType.amount' }
+          }
+        }
+      ]);
+    ctx.body = await transactions.toArray();
   }
 
   async checkTransaction(ctx) {
@@ -97,28 +140,49 @@ class Transactions extends Controller {
           .findOne({
             _id: transaction.createdBy
           });
-        // top up expiration date
-        let expDate = new Date();
-        if (user.expiresAt) {
-          const expiresAt = new Date(user.expiresAt);
-          // only top up expiresAt if its greater than the current date
-          if (expiresAt > expDate) {
-            expDate = expiresAt;
+        if (user) {
+          // top up expiration date
+          let expDate = this.getStartTime(user.expiresAt);
+          let newTime = expDate.getSeconds() + transaction.planType.subscriptionLength;
+          expDate = new Date(expDate.setSeconds(newTime));
+          await ctx.mongo
+            .db(process.env.TORULA_MONGODB_NAME)
+            .collection('accounts')
+            .updateOne({
+              _id: transaction.createdBy
+            }, {
+              $set: {
+                expiresAt: expDate.toISOString(),
+                updatedAt: new Date().toISOString()
+              }
+            });
+          // top up referrer, if they are not a reseller
+          if (transaction.referred && !transaction.referred.reseller) {
+            // get user that is referring
+            const referrer = await ctx.mongo.db(process.env.TORULA_MONGODB_NAME)
+              .collection('accounts')
+              .findOne({
+                username: transaction.referred.user
+              });
+            if (referrer) {
+              // top up referrer expiration date
+              expDate = this.getStartTime(referrer.expiresAt);
+              newTime = expDate.getSeconds() + transaction.planType.referralLength;
+              expDate = new Date(expDate.setSeconds(newTime));
+              await ctx.mongo
+                .db(process.env.TORULA_MONGODB_NAME)
+                .collection('accounts')
+                .updateOne({
+                  _id: referrer._id
+                }, {
+                  $set: {
+                    expiresAt: expDate.toISOString(),
+                    updatedAt: new Date().toISOString()
+                  }
+                });
+            }
           }
         }
-        const newTime = expDate.getSeconds() + transaction.planType.subscriptionLength;
-        expDate = new Date(expDate.setSeconds(newTime));
-        await ctx.mongo
-          .db(process.env.TORULA_MONGODB_NAME)
-          .collection('accounts')
-          .updateOne({
-            _id: transaction.createdBy
-          }, {
-            $set: {
-              expiresAt: expDate.toISOString(),
-              updatedAt: new Date().toISOString()
-            }
-          });
       }
 
       const updateObj = {
