@@ -131,9 +131,9 @@ class Accounts extends Controller {
     data.hashedPassword = await auth.hashPassword(ctx.request.body.password);
     data.updatedAt = new Date().toISOString();
 
-    // give new users a one hour free trial
+    // give new users a two hour free trial
     const expiresAt = new Date();
-    expiresAt.setHours(expiresAt.getHours() + (24 * 7));
+    expiresAt.setHours(expiresAt.getHours() + 2);
     data.expiresAt = expiresAt.toISOString();
 
     const password = data.password;
