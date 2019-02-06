@@ -119,7 +119,36 @@ class Transactions extends Controller {
           }
         }
       ]);
-    ctx.body = await transactions.toArray();
+    const transactionArr = await transactions.toArray();
+    // eslint-disable-next-line no-restricted-syntax
+    for (const transaction of transactionArr) {
+      // eslint-disable-next-line no-await-in-loop
+      const user = await ctx.mongo
+        .db(process.env.TORULA_MONGODB_NAME)
+        .collection('accounts')
+        .findOne({ username: transaction._id });
+      transaction.btcAddress = user.btcAddress;
+      transaction.paid = user.paid || 0;
+      transaction.earned = transaction.totalReferredAmount * 0.20;
+      transaction.remaining = transaction.earned - transaction.paid;
+    }
+    ctx.body = transactionArr;
+  }
+
+  async paidUser(ctx) {
+    ctx.body = await ctx.mongo
+      .db(process.env.TORULA_MONGODB_NAME)
+      .collection('accounts')
+      .findOneAndUpdate({
+        username: ctx.request.body.user
+      }, {
+        $set: {
+          paid: ctx.request.body.paid
+        }
+      }, {
+        returnOriginal: false,
+        returnNewDocument: true
+      });
   }
 
   async checkTransaction(ctx) {

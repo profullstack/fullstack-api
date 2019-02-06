@@ -19,6 +19,7 @@ router.post('/AYIuLzM8wp/check', controller.checkTransaction.bind(controller));
 router.get('/me', auth.jwt(), controller.getAllByUser.bind(controller));
 router.get('/referrals/me', auth.jwt(), controller.getAllReferralsByUser.bind(controller));
 router.get('/referrals', auth.jwt(), auth.isAdmin.bind(auth), controller.getAllReferrals.bind(controller));
+router.post('/referrals/paid', auth.jwt(), auth.isAdmin.bind(auth), controller.paidUser.bind(controller));
 router.get('/rates', auth.jwt(), controller.getRates.bind(controller));
 router.get('/status', auth.jwt(), controller.getStatus.bind(controller));
 router.get('/:id', auth.jwt(), controller.get.bind(controller));
