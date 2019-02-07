@@ -13,6 +13,11 @@ const client = new Coinpayments(options);
 class Transactions extends Controller {
   constructor() {
     super();
+    this.discounts = {
+      referrer: {
+        percentage: 0.1
+      }
+    };
     this.planTypes = {
       yearly: {
         amount: 125,
@@ -62,10 +67,14 @@ class Transactions extends Controller {
       .findOne({
         _id: ObjectId(ctx.state.user._id)
       });
+    let amount = planData.amount;
+    let discount = 0;
+    if (user.referred) discount = this.discounts.referred.discount;
+    amount -= (amount * discount);
     const tOptions = {
       currency1: quoteCurrency,
       currency2: baseCurrency,
-      amount: planData.amount,
+      amount,
       buyer_email: user.email
     };
     ctx.request.body = await client.createTransaction(tOptions);
@@ -78,6 +87,7 @@ class Transactions extends Controller {
     ctx.request.body.quoteCurrency = quoteCurrency;
     ctx.request.body.baseCurrency = baseCurrency;
     ctx.request.body.planType = planData;
+    ctx.request.body.discount = discount;
     ctx.request.body.status = '0';
     ctx.request.body.referred = user.referred;
     await this.post(ctx);
