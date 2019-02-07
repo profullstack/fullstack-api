@@ -253,7 +253,7 @@ class Accounts extends Controller {
       const updatedDoc = await ctx.mongo
         .db(process.env.TORULA_MONGODB_NAME)
         .collection(this.collection)
-        .findOneAndUpdate(ctx.state.user._id, {
+        .findOneAndUpdate(ObjectId(ctx.state.user._id), {
           $set: { ...body }
         }, {
           returnOriginal: false,
