@@ -221,6 +221,51 @@ class Accounts extends Controller {
     delete data.hashedPassword;
     ctx.body = data;
   }
+
+  async patch(ctx) {
+    if (!ctx.state.user) {
+      ctx.status = 401;
+      ctx.body = {
+        message: 'Must be logged in'
+      };
+
+      return;
+    }
+
+    const body = {
+      deposit: {}
+    };
+
+    const { email, phone, deposit } = ctx.request.body;
+
+    // only allow these properties from user
+    body.email = email.trim();
+    body.phone = phone.trim();
+
+    if (deposit.currency && deposit.address) {
+      body.deposit.currency = deposit.currency.trim();
+      body.deposit.address = deposit.address.trim();
+    }
+
+    ctx.request.body = body;
+
+    if (ctx.state.user) {
+      const updatedDoc = await ctx.mongo
+        .db(process.env.TORULA_MONGODB_NAME)
+        .collection(this.collection)
+        .findOneAndUpdate(ObjectId(ctx.state.user._id), {
+          $set: { ...body }
+        }, {
+          returnOriginal: false,
+          returnNewDocument: true
+        });
+
+      const user = updatedDoc.value;
+      delete user.hashedPassword;
+
+      ctx.body = user;
+    }
+  }
 }
 
 module.exports = Accounts;
