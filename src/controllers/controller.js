@@ -92,18 +92,19 @@ class Controller {
 
       ctx.body = updatedDoc.value;
     } else {
-      const newDoc = await ctx.mongo.db(process.env.TORULA_MONGODB_NAME).collection(this.collection)
+      const newDoc = await ctx.mongo.db(process.env.TORULA_MONGODB_NAME)
+        .collection(this.collection)
         .insertOne(Object.assign(data, $setOnInsert));
       ctx.body = newDoc.ops.shift();
     }
   }
 
-  async put(ctx, next) {
-    return this.post(ctx, next);
+  async put(ctx) {
+    return this.post(ctx);
   }
 
-  async patch(ctx, next) {
-    return this.post(ctx, next);
+  async patch(ctx) {
+    return this.post(ctx);
   }
 }
 

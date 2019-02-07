@@ -15,6 +15,7 @@ router.use(bodyParser());
 
 router.post('/', controller.post.bind(controller));
 router.get('/me', auth.jwt(), controller.me.bind(controller));
+router.patch('/me', auth.jwt(), controller.patch.bind(controller));
 router.get('/:id', auth.jwt(), controller.get.bind(controller));
 router.delete('/:id', auth.jwt(), controller.delete.bind(controller));
 router.post('/login', controller.login.bind(controller));
