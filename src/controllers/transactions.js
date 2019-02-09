@@ -69,7 +69,7 @@ class Transactions extends Controller {
       });
     let amount = planData.amount;
     let discount = 0;
-    if (user.referred) discount = this.discounts.referred.discount;
+    if (user.referred) discount = this.discounts.referrer.percentage;
     amount -= (amount * discount);
     const tOptions = {
       currency1: quoteCurrency,
