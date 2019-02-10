@@ -20,17 +20,17 @@ class Transactions extends Controller {
     };
     this.planTypes = {
       yearly: {
-        amount: 125,
+        amount: 50,
         subscriptionLength: 60 * 60 * 24 * 365,
         referralLength: 60 * 60 * 24 * 30
       },
       quarterly: {
-        amount: 40,
+        amount: 20,
         subscriptionLength: 60 * 60 * 24 * 90,
         referralLength: 60 * 60 * 24 * 14
       },
       monthly: {
-        amount: 15,
+        amount: 6,
         subscriptionLength: 60 * 60 * 24 * 30,
         referralLength: 60 * 60 * 24 * 7
       }
