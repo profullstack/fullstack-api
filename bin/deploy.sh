@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 
+. .env
+
 args=(-azvP --delete --exclude=node_modules --exclude=.idea --exclude=.git)
-hosts=(geese) # tornado lightning thunder tundra jefferson
+hosts=(fullstackdev) # tornado lightning thunder tundra jefferson
 dry=() #add --dry-run to enable testing
-user=ettinger
-name=fullstack
-project=fullstack-api
+user=$FULLSTACK_USER
+name=$FULLSTACK_PATH
+project=$FULLSTACK_PROJECT
 
 for host in "${hosts[@]}"
 do

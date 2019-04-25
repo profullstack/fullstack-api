@@ -1,5 +1,7 @@
 'use strict';
 
+require('dotenv').configure();
+
 const argOpts = {
   alias: {
     c: 'capacity'
